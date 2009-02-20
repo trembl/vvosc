@@ -35,29 +35,29 @@
 	return [self initWithAddress:a andPort:p labelled:nil];
 }
 - (id) initWithAddress:(NSString *)a andPort:(unsigned short)p labelled:(NSString *)l	{
-	if ((a==nil) || (p<1024))	{
-		[self release];
-		return nil;
+	if ((a==nil) || (p<1024))
+		goto BAIL;
+	
+	if (self = [super init])	{
+		deleted = NO;
+		sock = -1;
+		port = p;
+		addressString = [a retain];
+		portLabel = nil;
+		
+		if (l != nil)
+			portLabel = [l copy];
+		
+		//	if i can't make a socket, return nil
+		if (![self createSocket])
+			goto BAIL;
+		
+		return self;
 	}
 	
-	self = [super init];
-	
-	deleted = NO;
-	sock = -1;
-	port = p;
-	addressString = [a retain];
-	portLabel = nil;
-	
-	if (l != nil)
-		portLabel = [l copy];
-	
-	//	if i can't make a socket, return nil
-	if (![self createSocket])	{
-		[self release];
-		return nil;
-	}
-	
-	return self;
+	BAIL:
+	[self release];
+	return nil;
 }
 - (void) dealloc	{
 	//NSLog(@"OSCOutPort:dealloc:");

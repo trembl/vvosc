@@ -49,17 +49,22 @@
 	return [returnMe autorelease];
 }
 - (id) initWithContent:(id)c	{
-	self = [super init];
-	bufferLength = [c bufferLength];
-	payload = NULL;
-	if (bufferLength < 1)	{
-		[self release];
-		return nil;
+	if (c == nil)
+		goto BAIL;
+	
+	if (self = [super init])	{
+		bufferLength = [c bufferLength];
+		payload = NULL;
+		if (bufferLength < 1)
+			goto BAIL;
+		payload = malloc(bufferLength * sizeof(unsigned char));
+		memset(payload,'\0',bufferLength);
+		[c writeToBuffer:payload];
+		return self;
 	}
-	payload = malloc(bufferLength * sizeof(unsigned char));
-	memset(payload,'\0',bufferLength);
-	[c writeToBuffer:payload];
-	return self;
+	BAIL:
+	[self release];
+	return nil;
 }
 - (void) dealloc	{
 	//NSLog(@"OSCPacket:dealloc:");

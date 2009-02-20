@@ -192,23 +192,28 @@
 	return [returnMe autorelease];
 }
 - (id) initWithAddress:(NSString *)a	{
-	if (a == nil)	{
-		[self release];
-		return nil;
-	}
+	if (a == nil)
+		goto BAIL;
+	
 	pthread_rwlockattr_t		attr;
-	self = [super init];
-	//	if the address doesn't start with a "/", i need to add one
-	if (*[a cStringUsingEncoding:NSASCIIStringEncoding] != '/')
-		address = [[NSString stringWithFormat:@"/%@",a] retain];
-	else
-		address = [a retain];
-	typeArray = [[NSMutableArray arrayWithCapacity:0] retain];
-	argArray = [[NSMutableArray arrayWithCapacity:0] retain];
-	pthread_rwlockattr_init(&attr);
-	pthread_rwlockattr_setpshared(&attr, PTHREAD_PROCESS_SHARED);
-	pthread_rwlock_init(&lock, &attr);
-	return self;
+	
+	if (self = [super init])	{
+		//	if the address doesn't start with a "/", i need to add one
+		if (*[a cStringUsingEncoding:NSASCIIStringEncoding] != '/')
+			address = [[NSString stringWithFormat:@"/%@",a] retain];
+		else
+			address = [a retain];
+		typeArray = [[NSMutableArray arrayWithCapacity:0] retain];
+		argArray = [[NSMutableArray arrayWithCapacity:0] retain];
+		pthread_rwlockattr_init(&attr);
+		pthread_rwlockattr_setpshared(&attr, PTHREAD_PROCESS_SHARED);
+		pthread_rwlock_init(&lock, &attr);
+		return self;
+	}
+	
+	BAIL:
+	[self release];
+	return nil;
 }
 - (void) dealloc	{
 	//NSLog(@"OSCMessage:dealloc:");

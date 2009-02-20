@@ -25,30 +25,33 @@
 	return [returnMe autorelease];
 }
 - (id) initWithDomain:(NSString *)d andDomainManager:(id)m	{
-	if ((d == nil) || (m == nil))	{
-		[self release];
-		return nil;
-	}
+	if ((d == nil) || (m == nil))
+		goto BAIL;
+	
 	pthread_rwlockattr_t		attr;
 	
-	self = [super init];
+	if (self = [super init])	{
+		domainString = [d copy];
+		
+		servicesArray = [[NSMutableArray arrayWithCapacity:0] retain];
+		domainManager = nil;
+		
+		pthread_rwlockattr_init(&attr);
+		pthread_rwlockattr_setpshared(&attr, PTHREAD_PROCESS_SHARED);
+		pthread_rwlock_init(&servicesLock, &attr);
+		
+		domainManager = m;
+		
+		serviceBrowser = [[NSNetServiceBrowser alloc] init];
+		[serviceBrowser setDelegate:self];
+		[serviceBrowser searchForServicesOfType:@"_osc._udp" inDomain:domainString];
+		
+		return self;
+	}
 	
-	domainString = [d copy];
-	
-	servicesArray = [[NSMutableArray arrayWithCapacity:0] retain];
-	domainManager = nil;
-	
-	pthread_rwlockattr_init(&attr);
-	pthread_rwlockattr_setpshared(&attr, PTHREAD_PROCESS_SHARED);
-	pthread_rwlock_init(&servicesLock, &attr);
-	
-	domainManager = m;
-	
-	serviceBrowser = [[NSNetServiceBrowser alloc] init];
-	[serviceBrowser setDelegate:self];
-	[serviceBrowser searchForServicesOfType:@"_osc._udp" inDomain:domainString];
-	
-	return self;
+	BAIL:
+	[self release];
+	return nil;
 }
 
 - (void) dealloc	{

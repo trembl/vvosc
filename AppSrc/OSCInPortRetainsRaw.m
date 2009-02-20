@@ -14,11 +14,12 @@
 
 - (id) initWithPort:(unsigned short)p labelled:(NSString *)l	{
 	//NSLog(@"OSCInPortRetainsRaw:initWithPort:labelled:");
-	self = [super initWithPort:p labelled:l];
-	if (self != nil)	{
+	if (self = [super initWithPort:p labelled:l])	{
 		packetStringArray = [[NSMutableArray arrayWithCapacity:0] retain];
+		return self;
 	}
-	return self;
+	[self release];
+	return nil;
 }
 - (void) dealloc	{
 	if (packetStringArray != nil)	{

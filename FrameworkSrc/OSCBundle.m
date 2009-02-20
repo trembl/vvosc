@@ -73,9 +73,12 @@
 	return [returnMe autorelease];
 }
 - (id) init	{
-	self = [super init];
-	elementArray = [[NSMutableArray arrayWithCapacity:0] retain];
-	return self;
+	if (self = [super init])	{
+		elementArray = [[NSMutableArray arrayWithCapacity:0] retain];
+		return self;
+	}
+	[self release];
+	return nil;
 }
 
 - (void) dealloc	{

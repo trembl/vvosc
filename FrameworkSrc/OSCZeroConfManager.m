@@ -17,27 +17,30 @@
 
 
 - (id) initWithOSCManager:(id)m	{
-	if (m == nil)	{
-		[self release];
-		return nil;
-	}
+	if (m == nil)
+		goto BAIL;
+	
 	pthread_rwlockattr_t		attr;
 	
-	self = [super init];
+	if (self = [super init])	{
+		pthread_rwlockattr_init(&attr);
+		pthread_rwlockattr_setpshared(&attr, PTHREAD_PROCESS_SHARED);
+		pthread_rwlock_init(&domainLock, &attr);
+		
+		domainBrowser = [[NSNetServiceBrowser alloc] init];
+		[domainBrowser setDelegate:self];
+		[domainBrowser searchForRegistrationDomains];
+		
+		domainDict = [[NSMutableDictionary dictionaryWithCapacity:0] retain];
+		
+		oscManager = m;
+		
+		return self;
+	}
 	
-	pthread_rwlockattr_init(&attr);
-	pthread_rwlockattr_setpshared(&attr, PTHREAD_PROCESS_SHARED);
-	pthread_rwlock_init(&domainLock, &attr);
-	
-	domainBrowser = [[NSNetServiceBrowser alloc] init];
-	[domainBrowser setDelegate:self];
-	[domainBrowser searchForRegistrationDomains];
-	
-	domainDict = [[NSMutableDictionary dictionaryWithCapacity:0] retain];
-	
-	oscManager = m;
-	
-	return self;
+	BAIL:
+	[self release];
+	return nil;
 }
 - (void) dealloc	{
 	oscManager = nil;

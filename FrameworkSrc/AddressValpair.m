@@ -25,11 +25,15 @@
 }
 - (id) initWithAddress:(NSString *)a val:(id)v	{
 	if ((a==nil) || (v==nil))
-		return nil;
-	self = [super init];
-	address = [a retain];
-	val = [v retain];
-	return self;
+		goto BAIL;
+	if (self = [super init])	{
+		address = [a retain];
+		val = [v retain];
+		return self;
+	}
+	BAIL:
+	[self release];
+	return nil;
 }
 - (void) dealloc	{
 	[address release];

@@ -15,11 +15,12 @@
 
 
 - (id) init	{
-	self = [super init];
-	//	make an osc manager- i'm using "MyOSCManager" because i'm using a custom in-port
-	manager = [[MyOSCManager alloc] init];
-	//	by default, the osc manager's delegate will be told when osc messages are received
-	[manager setDelegate:self];
+	if (self = [super init])	{
+		//	make an osc manager- i'm using "MyOSCManager" because i'm using a custom in-port
+		manager = [[MyOSCManager alloc] init];
+		//	by default, the osc manager's delegate will be told when osc messages are received
+		[manager setDelegate:self];
+	}
 	
 	return self;
 }

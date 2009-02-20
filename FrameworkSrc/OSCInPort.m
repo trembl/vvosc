@@ -35,37 +35,39 @@
 - (id) initWithPort:(unsigned short)p labelled:(NSString *)l	{
 	pthread_mutexattr_t		attr;
 	
-	self = [super init];
-	deleted = NO;
-	port = p;
-	running = NO;
-	busy = NO;
-	
-	pthread_mutexattr_init(&attr);
-	pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_NORMAL);
-	pthread_mutex_init(&lock, &attr);
-	
-	threadTimer = nil;
-	threadTimerCount = 0;
-	
-	portLabel = nil;
-	if (l != nil)
-		portLabel = [l copy];
-	
-	scratchDict = [[NSMutableDictionary dictionaryWithCapacity:0] retain];
-	scratchArray = [[NSMutableArray arrayWithCapacity:0] retain];
-	
-	delegate = nil;
-	
-	zeroConfDest = nil;
-	
-	bound = [self createSocket];
-	if (!bound)	{
-		[self release];
-		return nil;
+	if (self = [super init])	{
+		deleted = NO;
+		port = p;
+		running = NO;
+		busy = NO;
+		
+		pthread_mutexattr_init(&attr);
+		pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_NORMAL);
+		pthread_mutex_init(&lock, &attr);
+		
+		threadTimer = nil;
+		threadTimerCount = 0;
+		
+		portLabel = nil;
+		if (l != nil)
+			portLabel = [l copy];
+		
+		scratchDict = [[NSMutableDictionary dictionaryWithCapacity:0] retain];
+		scratchArray = [[NSMutableArray arrayWithCapacity:0] retain];
+		
+		delegate = nil;
+		
+		zeroConfDest = nil;
+		
+		bound = [self createSocket];
+		if (!bound)
+			goto BAIL;
+		
+		return self;
 	}
-	
-	return self;
+	BAIL:
+	[self release];
+	return nil;
 }
 - (void) dealloc	{
 	//NSLog(@"OSCInPort:dealloc:");

@@ -17,20 +17,22 @@
 - (id) init	{
 	pthread_rwlockattr_t		attr;
 	
-	self = [super init];
-	
-	inPortArray = [[NSMutableArray arrayWithCapacity:0] retain];
-	outPortArray = [[NSMutableArray arrayWithCapacity:0] retain];
-	delegate = nil;
-	
-	pthread_rwlockattr_init(&attr);
-	pthread_rwlockattr_setpshared(&attr, PTHREAD_PROCESS_SHARED);
-	pthread_rwlock_init(&inPortLock, &attr);
-	pthread_rwlock_init(&outPortLock, &attr);
-	
-	zeroConfManager = [[OSCZeroConfManager alloc] initWithOSCManager:self];
-	
-	return self;
+	if (self = [super init])	{
+		inPortArray = [[NSMutableArray arrayWithCapacity:0] retain];
+		outPortArray = [[NSMutableArray arrayWithCapacity:0] retain];
+		delegate = nil;
+		
+		pthread_rwlockattr_init(&attr);
+		pthread_rwlockattr_setpshared(&attr, PTHREAD_PROCESS_SHARED);
+		pthread_rwlock_init(&inPortLock, &attr);
+		pthread_rwlock_init(&outPortLock, &attr);
+		
+		zeroConfManager = [[OSCZeroConfManager alloc] initWithOSCManager:self];
+		
+		return self;
+	}
+	[self release];
+	return nil;
 }
 
 - (void) dealloc	{
