@@ -142,6 +142,11 @@
 		return;
 	}
 	
+	//	this used to rename an output with the same IP address and port to match the
+	//	name of the newly-appeared service.  i commented this out because if the service
+	//	disappears it could inadvertently release an output port
+	
+	/*
 	//	if i'm here, i couldn't find an out port with the same name...try to find an out port with the same ip/port data
 	matchingOutPort = [oscManager findOutputWithAddress:ipString andPort:port];
 	//	if i found a matching out port, update its name & return
@@ -149,6 +154,7 @@
 		[matchingOutPort setPortLabel:[s name]];
 		return;
 	}
+	*/
 	
 	//	if i'm here, i couldn't find an out port with the same address/port
 	//	make a new out port with the relevant data
