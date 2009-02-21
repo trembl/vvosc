@@ -16,7 +16,7 @@
 
 
 
-///	An OSCBundle is a "wrapper" for multiple OSC messages or bundles (bundles may also be nested)
+///	An OSCBundle is a "container" for multiple OSC messages or bundles (bundles may also be nested)
 /*!
 According to the OSC spec, an OSC bundle is basically a wrapper for multiple OSC messages (or other bundles).  Instead of sending a bunch of individual messages, you can wrap them all into a bundle, and send the bundle (messages will still be sent to their individual address paths).  OSCBundle’s interface is correspondingly simple: you can create a bundle from some elements, or you can create a bundle and then add some elements (OSCMessages or OSCBundles) to it.
 */

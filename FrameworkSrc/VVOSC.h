@@ -1,6 +1,7 @@
 
 
-#import "AddressValPair.h" 
+#import "OSCValue.h"
+#import "OSCAddressSpace.h"
 #import "OSCManager.h"
 #import "OSCZeroConfManager.h"
 #import "OSCPacket.h"
@@ -67,7 +68,7 @@ manager = [[OSCManager alloc] init];<BR>
 outPort = [manager createNewOutputToAddress:@"127.0.0.1" atPort:1234];<BR>
 <BR>
 //    make an OSC message<BR>
-newMsg = [OSCMessage createMessageToAddress:@"/Address/Path/1"];<BR>
+newMsg = [OSCMessage createWithAddress:@"/Address/Path/1"];<BR>
 <BR>
 //    add a bunch arguments to the message<BR>
 [newMsg addInt:12];<BR>

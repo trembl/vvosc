@@ -86,7 +86,7 @@
 	return returnMe;
 }
 - (OSCInPort *) createNewInputForPort:(int)p withLabel:(NSString *)l	{
-	//NSLog(@"OSCManager:createNewInputForPort:withLabel: ... %ld, %@",p,l);
+	//NSLog(@"%s ... %ld, %@",__func__,p,l);
 	OSCInPort			*returnMe = nil;
 	NSEnumerator		*it;
 	OSCInPort			*portPtr;
@@ -168,7 +168,7 @@
 	return returnMe;
 }
 - (OSCOutPort *) createNewOutputToAddress:(NSString *)a atPort:(int)p withLabel:(NSString *)l	{
-	//NSLog(@"OSCManager:createNewOutputToAddress:atPort:withLabel: ... %@:%ld, %@",a,p,l);
+	//NSLog(@"%s ... %@:%ld, %@",__func__,a,p,l);
 	if ((a == nil) || (p < 1024) || (l == nil))
 		return nil;
 	
@@ -221,28 +221,16 @@
 #pragma mark --------------------- main osc callback
 /*------------------------------------*/
 /*!
-	this method is passed a dict; the keys of the dict are the address paths, and the object at each key is an array which contains the values passed to the address path.  this is referred to as "coalesced" updates because the values are organized by address path.
+	the passed OSCMessage has both the address and the value (or values- a message can have more than one value).  this method is called immediately, as the incoming OSC data is received- no attempt is made to coalesce the updates and sort them by address.
 	
 	important: this method will be called from any of a number of threads- each port is running in its own thread!
 	
-	typically, the manager is the input port's delegate- input ports tell delegates when they receive data.  by default, the manager is the input port's delegate- so this method will be called by default if your input port doesn't have another delegate.  as such, this method tells the manager's delegate about any received osc messages.
+	input ports tell their delegates when they receive data.  by default, the osc manager is the input port's delegate- so this method will be called by default if your input port doesn't have another delegate.  as such, this method tells the manager's delegate about any received osc messages.
 */
-- (void) oscMessageReceived:(NSDictionary *)d	{
-	//NSLog(@"OSCManager:oscMessageReceived: ... %@",d);
-	if ((delegate != nil) && ([delegate respondsToSelector:@selector(oscMessageReceived:)]))
-		[delegate oscMessageReceived:d];
-}
-/*!
-	the address (a) is the address path, (v) is the value passed to it.  this method is called immediately, as the incoming OSC data is received- no attempt is made to coalesce the updates and sort them by address.
-	
-	important: this method will be called from any of a number of threads- each port is running in its own thread!
-	
-	typically, the manager is the input port's delegate- input ports tell delegates when they receive data.  by default, the manager is the input port's delegate- so this method will be called by default if your input port doesn't have another delegate.  as such, this method tells the manager's delegate about any received osc messages.
-*/
-- (void) receivedOSCVal:(id)v forAddress:(NSString *)a	{
-	//NSLog(@"OSCManager:receivedOSCVal:forAddress: ... %@:%@",a,v);
-	if ((delegate != nil) && ([delegate respondsToSelector:@selector(receivedOSCVal:forAddress:)]))
-		[delegate receivedOSCVal:v forAddress:a];
+- (void) receivedOSCMessage:(OSCMessage *)m	{
+	//NSLog(@"%s ... %@",__func__,v);
+	if ((delegate != nil) && ([delegate respondsToSelector:@selector(receivedOSCMessage:)]))
+		[delegate receivedOSCMessage:m];
 }
 /*===================================================================================*/
 #pragma mark --------------------- working with ports

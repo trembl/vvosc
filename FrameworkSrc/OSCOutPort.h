@@ -22,7 +22,7 @@
 
 
 
-///	This class manages everything needed to send OSC data to a given address
+///	OSCOutPort handles everything needed to send OSC data to a given address
 /*!
 OSCOutPorts are created by the OSCManager- you should never have to explicitly handle their creation or destruction.
 

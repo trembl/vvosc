@@ -15,7 +15,7 @@
 
 
 + (void) parseRawBuffer:(unsigned char *)b ofMaxLength:(int)l toInPort:(id)p	{
-	//NSLog(@"OSCBundle:parseRawBuffer:ofMaxLength:toInPort:");
+	//NSLog(@"%s",__func__);
 	if ((b == nil) || (l == 0) || (p == NULL))
 		return;
 	
@@ -108,6 +108,7 @@
 }
 
 - (int) bufferLength	{
+	//NSLog(@"%s",__func__);
 	int				totalSize = 0;
 	NSEnumerator	*it;
 	id				anObj;
@@ -118,19 +119,13 @@
 		8 bytes for the timestamp
 	*/
 	totalSize = 16;
-	/*
-	the elements preceded by a comma- if the # of elements + 1 is an even multiple
-	of 4, i have to pad the buffer with an extra line of 0's (it's an osc string)
-	*/
-	//if (([elementArray count]+1)%4 == 0)
-	//	totalSize = totalSize + 4;
 	
 	//	run through my elements, getting their sizes
 	it = [elementArray objectEnumerator];
 	while (anObj = [it nextObject])	{
 		/*
-		each element will occupy 4 bytes (for the size description of the element)
-		plus the size of the element itself
+		each element will occupy an amount of space equal to the size of the payload plus
+		4 bytes (these 4 bytes are used to store the size of the payload which follows it)
 		*/
 		totalSize = totalSize + 4 + [anObj bufferLength];
 	}

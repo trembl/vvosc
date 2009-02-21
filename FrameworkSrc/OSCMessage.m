@@ -16,10 +16,13 @@
 
 
 - (NSString *) description	{
-	return [NSString stringWithFormat:@"<OSCMessage: %@\n%@",address,argArray];
+	if (valueCount < 2)
+		return [NSString stringWithFormat:@"<OSCMessage: %@\n%@\n>",address,value];
+	else
+		return [NSString stringWithFormat:@"<OSCMessage: %@-%@>",address,valueArray];
 }
 + (void) parseRawBuffer:(unsigned char *)b ofMaxLength:(int)l toInPort:(id)p	{
-	//NSLog(@"OSCMessage:parseRawBuffer:ofMaxLength:toInPort:");
+	//NSLog(@"%s ... %s, %ld -> %@",__func__,b,l,p);
 	if ((b == nil) || (l == 0) || (p == NULL))
 		return;
 	
@@ -92,6 +95,14 @@
 	/*
 				now actually parse the contents of the message
 	*/
+	
+	OSCMessage		*msg = [OSCMessage createWithAddress:address];
+	OSCValue		*oscValue = nil;
+	
+	if (msg == nil)	{
+		NSLog(@"\t\terr: msg was nil %s",__func__);
+		return;
+	}
 	//	run through the type arguments (,ffis etc.)- for each type arg, pull data from the buffer
 	for (i=msgTypeStartIndex; i<msgTypeEndIndex; ++i)	{
 		switch(b[i])	{
@@ -99,19 +110,18 @@
 				tmpLong = 0;
 				for(j=0; j<4; ++j)	{
 					tmpInt = b[tmpIndex+j];
-					//tmpLong = tmpLong | (tmpInt << ((3-j)*8));
 					tmpLong = tmpLong | (tmpInt << (j*8));
 				}
 				tmpInt = ntohl(tmpLong);
-				[p addValue:[NSNumber numberWithInt:tmpInt] toAddressPath:address];
-				//NSLog(@"\t\t%d",tmpInt);
+				oscValue = [OSCValue createWithInt:tmpInt];
+				[msg addValue:oscValue];
 				tmpIndex = tmpIndex + 4;
 				break;
 			case 'f':			//	float32
 				tmpInt = ntohl(*((long *)(b+tmpIndex)));
 				tmpFloatPtr = (float *)&tmpInt;
-				[p addValue:[NSNumber numberWithFloat:*tmpFloatPtr] toAddressPath:address];
-				//NSLog(@"\t\t%f",*tmpFloatPtr);
+				oscValue = [OSCValue createWithFloat:*tmpFloatPtr];
+				[msg addValue:oscValue];
 				tmpIndex = tmpIndex + 4;
 				break;
 			case 's':			//	OSC-string
@@ -127,8 +137,8 @@
 				//	4-byte-struct of '\0' to ensure that you know where that shit ends.
 				//	of course, this means that i don't need to check for the modulus before applying it.
 				
-				[p addValue:[NSString stringWithCString:(char *)(b+tmpIndex) encoding:NSASCIIStringEncoding] toAddressPath:address];
-				//NSLog(@"\t\t%@",[NSString stringWithCString:(char *)(b+tmpIndex) encoding:NSASCIIStringEncoding]);
+				oscValue = [OSCValue createWithString:[NSString stringWithCString:(char *)(b+tmpIndex) encoding:NSASCIIStringEncoding]];
+				[msg addValue:oscValue];
 				tmpIndex = tmpInt+1;
 				tmpIndex = 4 - (tmpIndex % 4) + tmpIndex;
 				break;
@@ -150,21 +160,21 @@
 				//NSLog(@"%d, %d, %d, %d",*((unsigned char *)b+tmpIndex),*((unsigned char *)b+tmpIndex+1),*((unsigned char *)b+tmpIndex+2),*((unsigned char *)b+tmpIndex+3));
 
 #if IPHONE
-				[p
-					addValue:[UIColor
+				oscValue = [OSCValue
+					createWithColor:[UIColor
 						colorWithRed:b[tmpIndex]/255.0
 						green:b[tmpIndex+1]/255.0
 						blue:b[tmpIndex+2]/255.0
-						alpha:b[tmpIndex+3]/255.0]
-					toAddressPath:address];
+						alpha:b[tmpIndex+3]/255.0]];
+				[msg addValue:oscValue];
 #else
-				[p
-					addValue:[NSColor
+				oscValue = [OSCValue
+					createWithColor:[NSColor
 						colorWithCalibratedRed:b[tmpIndex]/255.0
 						green:b[tmpIndex+1]/255.0
 						blue:b[tmpIndex+2]/255.0
-						alpha:b[tmpIndex+3]/255.0]
-					toAddressPath:address];
+						alpha:b[tmpIndex+3]/255.0]];
+				[msg addValue:oscValue];
 #endif
 				tmpIndex = tmpIndex + 4;
 				break;
@@ -172,10 +182,12 @@
 				tmpIndex = tmpIndex + 4;
 				break;
 			case 'T':			//	True.  no bytes are allocated in the argument data!
-				[p addValue:[NSNumber numberWithBool:YES] toAddressPath:address];
+				oscValue = [OSCValue createWithBool:YES];
+				[msg addValue:oscValue];
 				break;
 			case 'F':			//	False.  no bytes are allocated in the argument data!
-				[p addValue:[NSNumber numberWithBool:NO] toAddressPath:address];
+				oscValue = [OSCValue createWithBool:NO];
+				[msg addValue:oscValue];
 				break;
 			case 'N':			//	Nil.  no bytes are allocated in the argument data!
 				break;
@@ -184,8 +196,11 @@
 		}
 	}
 	
+	//	now that i've assembed the message, send it to the in port
+	[p addValue:msg toAddressPath:address];
+	
 }
-+ (id) createMessageToAddress:(NSString *)a	{
++ (id) createWithAddress:(NSString *)a	{
 	OSCMessage		*returnMe = [[OSCMessage alloc] initWithAddress:a];
 	if (returnMe == nil)
 		return nil;
@@ -195,19 +210,15 @@
 	if (a == nil)
 		goto BAIL;
 	
-	pthread_rwlockattr_t		attr;
-	
 	if (self = [super init])	{
 		//	if the address doesn't start with a "/", i need to add one
 		if (*[a cStringUsingEncoding:NSASCIIStringEncoding] != '/')
 			address = [[NSString stringWithFormat:@"/%@",a] retain];
 		else
 			address = [a retain];
-		typeArray = [[NSMutableArray arrayWithCapacity:0] retain];
-		argArray = [[NSMutableArray arrayWithCapacity:0] retain];
-		pthread_rwlockattr_init(&attr);
-		pthread_rwlockattr_setpshared(&attr, PTHREAD_PROCESS_SHARED);
-		pthread_rwlock_init(&lock, &attr);
+		valueCount = 0;
+		value = nil;
+		valueArray = nil;
 		return self;
 	}
 	
@@ -216,251 +227,150 @@
 	return nil;
 }
 - (void) dealloc	{
-	//NSLog(@"OSCMessage:dealloc:");
+	//NSLog(@"%s",__func__);
 	if (address != nil)
 		[address release];
 	address = nil;
-	if (typeArray != nil)
-		[typeArray release];
-	typeArray = nil;
-	if (argArray != nil)
-		[argArray release];
-	argArray = nil;
-	pthread_rwlock_destroy(&lock);
+	if (value != nil)
+		[value release];
+	value = nil;
+	if (valueArray != nil)
+		[valueArray release];
+	valueArray = nil;
+	valueCount = 0;
 	[super dealloc];
 }
 
 - (void) addInt:(int)n	{
-	//NSLog(@"OSCMessage:addInt: ... %d",n);
-	[typeArray addObject:[NSString stringWithString:@"i"]];
-	[argArray addObject:[NSNumber numberWithInt:n]];
+	//NSLog(@"%s ... %d",__func__,n);
+	[self addValue:[OSCValue createWithInt:n]];
 }
 - (void) addFloat:(float)n	{
-	//NSLog(@"OSCMessage:addFloat:");
-	[typeArray addObject:[NSString stringWithString:@"f"]];
-	[argArray addObject:[NSNumber numberWithFloat:n]];
+	//NSLog(@"%s",__func__);
+	[self addValue:[OSCValue createWithFloat:n]];
 }
-
+- (void) addString:(NSString *)n	{
+	//NSLog(@"%s ... %@",__func__,n);
+	[self addValue:[OSCValue createWithString:n]];
+}
 #if IPHONE
 - (void) addColor:(UIColor *)c	{
 #else
 - (void) addColor:(NSColor *)c	{
 #endif
-
-	if (c != nil)	{
-		[typeArray addObject:[NSString stringWithString:@"r"]];
-		[argArray addObject:c];
-	}
+	//NSLog(@"%s",__func__);
+	[self addValue:[OSCValue createWithColor:c]];
 }
-
 - (void) addBOOL:(BOOL)n	{
-	if (n)
-		[typeArray addObject:[NSString stringWithString:@"T"]];
-	else
-		[typeArray addObject:[NSString stringWithString:@"F"]];
+	//NSLog(@"%s",__func__);
+	[self addValue:[OSCValue createWithBool:n]];
+}
+- (void) addValue:(OSCValue *)n	{
+	//NSLog(@"%s ... %@",__func__,n);
+	if (n == nil)
+		return;
+	//	if i haven't already stored a val, just store it at the single variable
+	if (valueCount == 0)
+		value = [n retain];
+	//	else if there's more than 1 val, i'll be adding it to the array
+	else	{
+		//	if the array doesn't exist yet, create it (and clean up the existing val)
+		if (valueArray == nil)	{
+			valueArray = [[NSMutableArray arrayWithCapacity:0] retain];
+			[valueArray addObject:value];
+			[value release];
+			value = nil;
+		}
+		//	add the new val to the array
+		[valueArray addObject:n];
+	}
+	
+	//	increment the value count
+	++valueCount;
+}
+/*!
+	NOT A KEY-VALUE METHOD!
+	
+	The 'value' method is purely for convenience- most OSC messages only have a single value, and most of the time when they have multiple values you really only want the first one.  If this message only has a single value, it returns the value- if the message has multiple values, this method only returns the first of my values!
+*/
+- (OSCValue *) value	{
+	if (valueCount < 2)
+		return value;
+	if (valueArray != nil)
+		return [valueArray objectAtIndex:0];
+	return nil;
 }
 
-- (void) addString:(NSString *)n	{
-	//NSLog(@"OSCMessage:addString: ... %@",n);
-	if (n != nil)	{
-		[typeArray addObject:[NSString stringWithString:@"s"]];
-		[argArray addObject:n];
-	}
+
+- (NSString *) address	{
+	return address;
 }
+- (int) valueCount	{
+	return valueCount;
+}
+- (NSMutableArray *) valueArray	{
+	return valueArray;
+}
+
+
 
 - (int) bufferLength	{
-	//NSLog(@"OSCMessage:bufferLength:");
-	int		addressLength;
-	int		typeLength;
-	int		argLength;
+	//NSLog(@"%s",__func__);
 	
-	//	length of the address (round up to nearest 4 bytes)
+	int		addressLength = 0;
+	int		typeLength = 0;
+	int		payloadLength = 0;
+	
+	//	determine the length of the address (round up to the nearest 4 bytes)
 	addressLength = [address length];
-	addressLength = ((addressLength%4)!=0) ? 4-(addressLength%4)+addressLength : addressLength+4;
-	//	length of the number of types + 1 (the "+ 1" is the comma)- round up to nearest 4 bytes
-	typeLength = [typeArray count] + 1;
-	typeLength = ((typeLength%4)!=0) ? 4-(typeLength%4)+typeLength : typeLength+4;
-	//	length of the contents of the various arguments (eached rounded up to neares 4 bytes)
-	NSEnumerator		*typeIt = [typeArray objectEnumerator];
-	NSEnumerator		*argIt = [argArray objectEnumerator];
-	NSString			*typePtr;
-	id					argPtr;
-	char				typeChar;
-	int					tmpInt;
-	
-	argLength = 0;
-	while ((typePtr = [typeIt nextObject]) && (argPtr = [argIt nextObject]))	{
-		typeChar = *[typePtr cStringUsingEncoding:NSASCIIStringEncoding];
-		switch (typeChar)	{
-			case 'i':			//	int32
-				argLength = argLength + 4;
-				break;
-			case 'f':			//	float32
-				argLength = argLength + 4;
-				break;
-			case 's':			//	OSC-string
-			case 'S':			//	alternate type represented as an OSC-string
-				tmpInt = [argPtr length];
-				//	figure out how long the string is- if it's an even multiple of 4
-				if (tmpInt%4 == 0)	{
-					//	add a 4-byte stride of padding
-					argLength = argLength + (tmpInt + 4);
-				}
-				//	else round up to the nearest 4-byte strid
-				else	{
-					argLength = argLength + (4-(tmpInt%4)+tmpInt);
-				}
-				break;
-			case 'b':			//	OSC-blob
-				break;
-			case 'h':			//	64 bit big-endian two's complement integer
-				argLength = argLength + 8;
-				break;
-			case 't':			//	OSC-timetag (64-bit/8 byte)
-				argLength = argLength + 8;
-				break;
-			case 'd':			//	64 bit ("double") IEEE 754 floating point number
-				argLength = argLength + 8;
-				break;
-			case 'c':			//	an ascii character, sent as 32 bits
-				argLength = argLength + 4;
-				break;
-			case 'r':			//	32 bit RGBA color
-				argLength = argLength + 4;
-				break;
-			case 'm':			//	4 byte MIDI message.  bytes from MSB to LSB are: port id, status byte, data1, data2
-				argLength = argLength + 4;
-				break;
-			case 'T':			//	True.  no bytes are allocated in the argument data!
-				break;
-			case 'F':			//	False.  no bytes are allocated in the argument data!
-				break;
-			case 'N':			//	Nil.  no bytes are allocated in the argument data!
-				break;
-			case 'I':			//	Infinitum.  no bytes are allocated in the argument data!
-				break;
-		}
+	addressLength = ROUNDUP4(addressLength);
+	//	determine the length of the type args (# of type + 1 [for the comma], round up to nearest 4 bytes)
+	typeLength = valueCount + 1;
+	typeLength = ROUNDUP4(typeLength);
+	//	determine the length of the various arguments- each rounded up to the nearest 4 bytes
+	//	now write all the data from the vals to the buffer
+	if ((valueCount < 2) && (value != nil))
+		payloadLength += [value bufferLength];
+	else	{
+		NSEnumerator		*it = [valueArray objectEnumerator];
+		OSCValue			*valuePtr;
+		while (valuePtr = [it nextObject])
+			payloadLength += [valuePtr bufferLength];
 	}
 	
-	return addressLength + typeLength + argLength;
+	return addressLength + typeLength + payloadLength;
 }
 - (void) writeToBuffer:(unsigned char *)b	{
+	//NSLog(@"%s",__func__);
+	
 	if (b == NULL)
 		return;
 	
-	int					j;
-	NSEnumerator		*typeIt;
-	NSEnumerator		*argIt;
-	NSString			*typePtr;
-	id					argPtr;
-	char				typeChar;
-	int					writeOffset = 0;
-	float				tmpFloat = 0.0;
-	//uint32				tmpUInt = 0;
-	unsigned char		tmpChar = 0;
-	long				tmpLong;
-	unsigned char		*charPtr = NULL;
-#if IPHONE
-	CGColorRef			tmpColor;
-	const CGFloat		*tmpCGFloatPtr;
-#endif
+	int					dataWriteOffset = 0;
+	int					typeWriteOffset = 0;
 	
 	
-	//	write the address (round up to nearest 4 bytes)
+	//	write the address, rounded up to the nearest 4 bytes
 	strncpy((char *)b, [address cStringUsingEncoding:NSASCIIStringEncoding], [address length]);
-	writeOffset = writeOffset + [address length];
-	writeOffset = 4 - (writeOffset % 4) + writeOffset;
-	//	write the type arguments
-	*(b + writeOffset) = ',';
-	++writeOffset;
-	typeIt = [typeArray objectEnumerator];
-	while (typePtr = [typeIt nextObject])	{
-		*(b + writeOffset) = *[typePtr cStringUsingEncoding:NSASCIIStringEncoding];
-		++writeOffset;
-	}
-	writeOffset = 4 - (writeOffset % 4) + writeOffset;
-	//	write the contents of the actual arguments
-	typeIt = [typeArray objectEnumerator];
-	argIt = [argArray objectEnumerator];
-	while ((typePtr = [typeIt nextObject]) && (argPtr = [argIt nextObject]))	{
-		typeChar = *[typePtr cStringUsingEncoding:NSASCIIStringEncoding];
-		switch (typeChar)	{
-			case 'i':			//	int32
-				tmpLong = [argPtr intValue];
-				tmpLong = htonl(tmpLong);
-				
-				for (j=0; j<4; ++j)	{
-					b[writeOffset+j] = 255 & (tmpLong >> (j*8));
-				}
-				
-				writeOffset = writeOffset + 4;
-				break;
-			case 'f':			//	float32
-				tmpFloat = [argPtr floatValue];
-				tmpLong = htonl(*((long *)(&tmpFloat)));
-				strncpy((char *)(b + writeOffset), (char *)(&tmpLong), 4);
-				writeOffset = writeOffset + 4;
-				break;
-			case 's':			//	OSC-string
-			case 'S':			//	alternate type represented as an OSC-string
-				tmpLong = [argPtr length];
-				charPtr = (unsigned char *)[argPtr cStringUsingEncoding:NSASCIIStringEncoding];
-				strncpy((char *)(b+writeOffset),(char *)charPtr,tmpLong);
-				
-				writeOffset = writeOffset + tmpLong;
-				if (tmpLong%4 == 0)
-					writeOffset = writeOffset + 4;
-				else
-					writeOffset = writeOffset + (4 - (writeOffset % 4));
-				break;
-			case 'b':			//	OSC-blob
-				break;
-			case 'h':			//	64 bit big-endian two's complement integer
-				break;
-			case 't':			//	OSC-timetag (64-bit/8 byte)
-				break;
-			case 'd':			//	64 bit ("double") IEEE 754 floating point number
-				break;
-			case 'c':			//	an ascii character, sent as 32 bits
-				break;
-			case 'r':			//	32 bit RGBA color
-
-#if IPHONE
-				tmpColor = [argPtr CGColor];
-				tmpCGFloatPtr = CGColorGetComponents(tmpColor);
-				
-				tmpChar = *(tmpCGFloatPtr) * 255.0;
-				b[writeOffset] = tmpChar;
-				tmpChar = *(tmpCGFloatPtr+1) * 255.0;
-				b[writeOffset+1] = tmpChar;
-				tmpChar = *(tmpCGFloatPtr+2) * 255.0;
-				b[writeOffset+2] = tmpChar;
-				tmpChar = *(tmpCGFloatPtr+3) * 255.0;
-				b[writeOffset+3] = tmpChar;
-#else
-				tmpChar = [argPtr redComponent] * 255.0;
-				b[writeOffset] = tmpChar;
-				tmpChar = [argPtr greenComponent] * 255.0;
-				b[writeOffset+1] = tmpChar;
-				tmpChar = [argPtr blueComponent] * 255.0;
-				b[writeOffset+2] = tmpChar;
-				tmpChar = [argPtr alphaComponent] * 255.0;
-				b[writeOffset+3] = tmpChar;
-#endif
-				
-				writeOffset = writeOffset + 4;
-				break;
-			case 'm':			//	4 byte MIDI message.  bytes from MSB to LSB are: port id, status byte, data1, data2
-				break;
-			case 'T':			//	True.  no bytes are allocated in the argument data!
-				break;
-			case 'F':			//	False.  no bytes are allocated in the argument data!
-				break;
-			case 'N':			//	Nil.  no bytes are allocated in the argument data!
-				break;
-			case 'I':			//	Infinitum.  no bytes are allocated in the argument data!
-				break;
-		}
+	typeWriteOffset += [address length];
+	//	the actual type data location is rounded up to the nearest 4
+	typeWriteOffset = ROUNDUP4(typeWriteOffset);
+	//	figure out where i'll be starting to write the data (the +1 is the comma)
+	dataWriteOffset = typeWriteOffset + 1 + valueCount;
+	dataWriteOffset = ROUNDUP4(dataWriteOffset);
+	
+	//	write the comma at the beginning of the list of types
+	*(b + typeWriteOffset) = ',';
+	++typeWriteOffset;
+	
+	//	now write all the data from the vals to the buffer
+	if ((valueCount < 2) && (value != nil))
+		[value writeToBuffer:b typeOffset:&typeWriteOffset dataOffset:&dataWriteOffset];
+	else	{
+		NSEnumerator		*it = [valueArray objectEnumerator];
+		OSCValue			*valuePtr;
+		while (valuePtr = [it nextObject])
+			[valuePtr writeToBuffer:b typeOffset:&typeWriteOffset dataOffset:&dataWriteOffset];
 	}
 }
 

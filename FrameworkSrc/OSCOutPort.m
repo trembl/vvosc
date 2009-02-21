@@ -60,7 +60,7 @@
 	return nil;
 }
 - (void) dealloc	{
-	//NSLog(@"OSCOutPort:dealloc:");
+	//NSLog(@"%s",__func__);
 	if (!deleted)
 		[self prepareToBeDeleted];
 	if (addressString != nil)
@@ -124,7 +124,7 @@
 		[self sendThisPacket:newPacket];
 }
 - (void) sendThisPacket:(OSCPacket *)p	{
-	//NSLog(@"OSCOutPort:sendThisPacket:");
+	//NSLog(@"%s",__func__);
 	if ((deleted) || (sock == -1) || (p == nil))
 		return;
 	//	make sure the packet doesn't get released if its pool gets drained while i'm sending it
@@ -145,7 +145,7 @@
 }
 
 - (void) setAddressString:(NSString *)n	{
-	//NSLog(@"OSCOutPort:setAddressString: ... %@",n);
+	//NSLog(@"%s ... %@",__func__,n);
 	if ((n==nil) || ([addressString isEqualToString:n]))
 		return;
 	NSRange		bogusCharRange = [n rangeOfCharacterFromSet:[NSCharacterSet letterCharacterSet]];

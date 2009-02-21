@@ -49,6 +49,7 @@
 	return [returnMe autorelease];
 }
 - (id) initWithContent:(id)c	{
+	//NSLog(@"%s",__func__);
 	if (c == nil)
 		goto BAIL;
 	
@@ -60,6 +61,17 @@
 		payload = malloc(bufferLength * sizeof(unsigned char));
 		memset(payload,'\0',bufferLength);
 		[c writeToBuffer:payload];
+		/*
+		printf("******************************\n");
+		int				bundleIndexCount;
+		unsigned char	*bufferCharPtr=payload;
+		for (bundleIndexCount=0; bundleIndexCount<(bufferLength/4); ++bundleIndexCount)	{
+			printf("\t(%ld)\t\t%c\t%c\t%c\t%c\t\t%ld\t\t%ld\t\t%ld\t\t%ld\n",bundleIndexCount * 4,
+				*(bufferCharPtr+bundleIndexCount*4), *(bufferCharPtr+bundleIndexCount*4+1), *(bufferCharPtr+bundleIndexCount*4+2), *(bufferCharPtr+bundleIndexCount*4+3),
+				*(bufferCharPtr+bundleIndexCount*4), *(bufferCharPtr+bundleIndexCount*4+1), *(bufferCharPtr+bundleIndexCount*4+2), *(bufferCharPtr+bundleIndexCount*4+3));
+		}
+		printf("******************************\n");
+		*/
 		return self;
 	}
 	BAIL:
@@ -67,7 +79,7 @@
 	return nil;
 }
 - (void) dealloc	{
-	//NSLog(@"OSCPacket:dealloc:");
+	//NSLog(@"%s",__func__);
 	bufferLength = 0;
 	if (payload != NULL)
 		free(payload);

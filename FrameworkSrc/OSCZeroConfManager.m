@@ -63,7 +63,7 @@
 //	called when an osc service disappears
 //	it finds an output matching the service being removed it will release the out port
 - (void) serviceRemoved:(NSNetService *)s	{
-	//NSLog(@"OSCZeroConfManager:serviceRemoved: ... %@",[s name]);
+	//NSLog(@"%s ... %@",__func__,[s name]);
 	OSCOutPort		*foundPort = nil;
 	//	try to find an out port in the manager with the same name
 	foundPort = [oscManager findOutputWithLabel:[s name]];
@@ -75,7 +75,7 @@
 //	called when an osc service (an osc destination) appears
 //	it either updates an existing output port or it makes a new output port for the service
 - (void) serviceResolved:(NSNetService *)s	{
-	//NSLog(@"OSCZeroConfManager:serviceResolved:");
+	//NSLog(@"%s",__func__);
 	OSCInPort			*matchingInPort = nil;
 	OSCOutPort			*matchingOutPort = nil;
 	NSArray				*addressArray = [s addresses];
@@ -161,7 +161,7 @@
 
 //	NSNetServiceBrowser delegate methods
 - (void)netServiceBrowser:(NSNetServiceBrowser *)n didFindDomain:(NSString *)d moreComing:(BOOL)m	{
-	//NSLog(@"OSCZeroConfManager:netServiceBrowser:didFindDomain:moreComing: ... %@, %ld",d,m);
+	//NSLog(@"%s ... %@, %ld",__func__,d,m);
 	OSCZeroConfDomain	*newDomain = nil;
 	
 	newDomain = [OSCZeroConfDomain createWithDomain:d andDomainManager:self];
@@ -172,7 +172,7 @@
 	}
 }
 - (void)netServiceBrowser:(NSNetServiceBrowser *)n didNotSearch:(NSDictionary *)err	{
-	//NSLog(@"OSCZeroConfManager:netServiceBrowser:didNotSearch: ... %@",err);
+	//NSLog(@"%s ... %@",__func__,err);
 	NSLog(@"\t\terr, oscbm didn't search: %@",err);
 }
 

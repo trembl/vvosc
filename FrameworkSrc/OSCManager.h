@@ -26,20 +26,19 @@
 
 ///	Main VVOSC class- manages in & out port creation, zero configuration networking (bonjour/zeroconf)
 /*!
-The OSCManager should be the "main" class that you're working with: it creates/deletes inputs and outputs, automatically creates outputs for any osc destinations detected via bonjour, handles distribution of all received OSC messages, and does other manager-ish things.  You should only need one instance of OSCManager in your application.
+The OSCManager should be the "main" class that you're working with: it passes any received OSC data to its delegate (your app), creates/deletes inputs and outputs, automatically creates outputs for any osc destinations detected via bonjour, handles distribution of all received OSC messages, and does other manager-ish things.  You should only need one instance of OSCManager in your application.  One of your objects should be OSCManager's delegate (see the "OSCDelegateProtocol" below) so you may receive OSC data.
 
 Incoming OSC data is initially received by an OSCInPort; fundamentally, in ports are running a loop which checks a socket for data received since the last loop.  By default, the OSCInPort's delegate is the OSCManager which created it.  Every time the loop runs, it passes the received data off to its delegate (the manager) in two different ways- first as the raw address/value pairs in the order they're received, then as a dictionary of coalesced values (each key is an address path, the object at the key is an array of values).  When the OSCManager receives data via either of these means it immediately passes the received data to its delegate, which should respond to one of the following methods (referred to as the 'OSCDelegateProtocol'):
 
 \htmlonly
 <div style="width: 100%; border: 1px #000 solid; background-color: #F0F0F0; padding: 5px; margin: 5px; color: black; font-family: Courier; font-size: 10pt; font-style: normal;">
 @protocol OSCDelegateProtocol<BR>
-- (void) receivedOSCVal:(id)v forAddress:(NSString *)a;<BR>
-- (void) oscMessageReceived:(NSDictionary *)d;<BR>
+- (void) receivedOSCMessage:(OSCMessage *)m;<BR>
 @end
 </div>
 \endhtmlonly
 
-...if you want to work with received OSC data, OSCManager's delegate must respond to at least one of these methods!
+...if you want to work with received OSC data, OSCManager's delegate must respond to this method!
 */
 @interface OSCManager : NSObject {
 	NSMutableArray			*inPortArray;	//	Array of OSCInPorts- do not access without using the lock!
@@ -76,10 +75,8 @@ Incoming OSC data is initially received by an OSCInPort; fundamentally, in ports
 ///	Creates a new output to this machine at port 1234
 - (OSCOutPort *) createNewOutput;
 
-///	Called when OSCInPorts have a coalesced dict of received values (by default, the manager is an OSCInPort's delegate)
-- (void) oscMessageReceived:(NSDictionary *)d;
 ///	Called when OSCInPorts are processing received messages serially (by default, the manager is an OSCInPort's delegate)
-- (void) receivedOSCVal:(id)v forAddress:(NSString *)a;
+- (void) receivedOSCMessage:(OSCMessage *)m;
 
 //	Creates and returns a unique label for an input port (unique to this manager)
 - (NSString *) getUniqueInputLabel;

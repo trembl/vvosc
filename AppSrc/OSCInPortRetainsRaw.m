@@ -13,7 +13,7 @@
 
 
 - (id) initWithPort:(unsigned short)p labelled:(NSString *)l	{
-	//NSLog(@"OSCInPortRetainsRaw:initWithPort:labelled:");
+	//NSLog(@"%s",__func__);
 	if (self = [super initWithPort:p labelled:l])	{
 		packetStringArray = [[NSMutableArray arrayWithCapacity:0] retain];
 		return self;
@@ -75,41 +75,22 @@
 	//	tell the super to parse the raw data
 	[super parseRawBuffer:b ofMaxLength:l];
 }
-/*
 
-*/
-- (void) handleParsedScratchDict:(NSDictionary *)d	{
-	//NSLog(@"OSCInPortRetainsRaw:handleParsedScratchDict:");
-	NSMutableString		*mutString = [NSMutableString stringWithCapacity:0];
-	NSEnumerator		*it = [[d allKeys] objectEnumerator];
-	NSEnumerator		*altIt = nil;
-	NSString			*key = nil;
-	NSArray				*valArray = nil;
-	id					anObj;
-	
-	[mutString appendString:@"***************"];
-	while (key = [it nextObject])	{
-		//NSLog(@"\t%@",key);
-		[mutString appendFormat:@"\r%@-",key];
-		valArray = [d objectForKey:key];
-		altIt = [valArray objectEnumerator];
-		while (anObj = [altIt nextObject])	{
-			[mutString appendFormat:@"\r\t%@",anObj];
-		}
-	}
-	[[packetStringArray lastObject] setObject:mutString forKey:@"coalesced"];
-	[super handleParsedScratchDict:d];
-}
 - (void) handleScratchArray:(NSArray *)a	{
+	//NSLog(@"%s",__func__);
 	NSMutableString		*mutString = [NSMutableString stringWithCapacity:0];
 	NSEnumerator		*it = [a objectEnumerator];
-	AddressValPair		*anObj;
+	OSCMessage			*anObj;
 	
 	[mutString appendString:@"***************"];
 	while (anObj = [it nextObject])	{
-		[mutString appendFormat:@"\r%@ : %@",[anObj address],[anObj val]];
+		if ([anObj valueCount] < 2)
+			[mutString appendFormat:@"\r%@ : %@",[anObj address],[anObj value]];
+		else
+			[mutString appendFormat:@"\r%@ : %@",[anObj address],[anObj valueArray]];
 	}
 	[[packetStringArray lastObject] setObject:mutString forKey:@"serial"];
+	
 	[super handleScratchArray:a];
 }
 

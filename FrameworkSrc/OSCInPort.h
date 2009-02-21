@@ -18,25 +18,24 @@
 #import <netinet/in.h>
 
 #import <pthread.h>
-#import "AddressValPair.h"
 #import "OSCPacket.h"
 #import "OSCBundle.h"
 #import "OSCMessage.h"
 
 
 @protocol OSCInPortDelegateProtocol
-- (void) oscMessageReceived:(NSDictionary *)d;
-- (void) receivedOSCVal:(id)v forAddress:(NSString *)a;
+- (void) receivedOSCMessage:(OSCMessage *)m;
 @end
 
 @protocol OSCDelegateProtocol
-- (void) oscMessageReceived:(NSDictionary *)d;
-- (void) receivedOSCVal:(id)v forAddress:(NSString *)a;
+- (void) receivedOSCMessage:(OSCMessage *)m;
 @end
 
-///	This class manages everything needed to receive OSC data on a given port
+///	OSCInPort handles everything needed to receive OSC data on a given port
 /*!
-OSCInPorts are created by the OSCManager- you should never have to explicitly handle their creation or destruction.  each OSCInPort is running in its own separate thread- so make sure anything called as a result of received OSC input is thread-safe!
+Typically, instances of OSCInPort will be created by the OSCManager- you should never have to explicitly handle their creation or destruction.  each OSCInPort is running in its own separate thread- so make sure anything called as a result of received OSC input is thread-safe!
+
+When OSCInPort receives data, it gets parsed and passed to the in port's delegate as a series of OSCMessages consisting of an address path and an OSCValue.  By default, the the inport's delegate is the manager which created it- and by default, managers pass this data on to *their* delegates (your objects/app).
 
 the documentation here only covers the basics, the header file for this class is small and heavily commented if you want to know more because you're heavily customizing OSCInPort.
 */
@@ -58,8 +57,7 @@ the documentation here only covers the basics, the header file for this class is
 	NSString				*portLabel;		//!<the "name" of the port (added to distinguish multiple osc input ports for bonjour)
 	NSNetService			*zeroConfDest;	//	bonjour service for publishing this input's address...only active if there's a portLabel!
 	
-	NSMutableDictionary		*scratchDict;	//	key of dict is address port; object at key is a mut. array.  coalesced messaging.
-	NSMutableArray			*scratchArray;	//	array of AddressValPair objects.  used for serial messaging.
+	NSMutableArray			*scratchArray;	//	array of OSCMessage objects.  used for serial messaging.
 	id						delegate;	//!<my delegate gets notified of incoming messages
 }
 
@@ -72,7 +70,7 @@ the documentation here only covers the basics, the header file for this class is
 
 - (void) prepareToBeDeleted;
 
-///	returns an auto-released NSDictionary which describes this port (useful for restoring the state of the port later)
+///	returns an auto-released NSDictionary which describes this port (useful for restoring the state of the port later with OSCManager )
 - (NSDictionary *) createSnapshot;
 
 - (BOOL) createSocket;
@@ -82,12 +80,10 @@ the documentation here only covers the basics, the header file for this class is
 - (void) OSCThreadProc:(NSTimer *)t;
 - (void) parseRawBuffer:(unsigned char *)b ofMaxLength:(int)l;
 
-///	called internally by this OSCInPort, passed a dict with the coalesced osc updates
-- (void) handleParsedScratchDict:(NSDictionary *)d;
-///	called internally by this OSCInPort, passed an array of AddressValPair objects corresponding to the serially received data
+///	called internally by this OSCInPort, passed an array of OSCMessage objects corresponding to the serially received data
 - (void) handleScratchArray:(NSArray *)a;
 
-- (void) addValue:(id)val toAddressPath:(NSString *)p;
+- (void) addValue:(OSCMessage *)val toAddressPath:(NSString *)p;
 
 - (unsigned short) port;
 - (void) setPort:(unsigned short)n;

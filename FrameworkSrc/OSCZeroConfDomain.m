@@ -78,7 +78,7 @@
 
 //	NSNetServiceBrowser delegate methods
 - (void)netServiceBrowser:(NSNetServiceBrowser *)n didFindService:(NSNetService *)x moreComing:(BOOL)m	{
-	//NSLog(@"OSCZeroConfDomain:netServiceBrowser:didFindService:moreComing:");
+	//NSLog(@"%s",__func__);
 	if (x != nil)	{
 		pthread_rwlock_wrlock(&servicesLock);
 			[servicesArray addObject:x];
@@ -88,11 +88,11 @@
 	}
 }
 - (void)netServiceBrowser:(NSNetServiceBrowser *)n didNotSearch:(NSDictionary *)err	{
-	//NSLog(@"OSCZeroConfDomain:netServiceBrowser:didNotSearch: ... %@",err);
+	//NSLog(@"%s ... %@",__func__,err);
 	NSLog(@"\t\terr, didn't search: %@",err);
 }
 - (void)netServiceBrowser:(NSNetServiceBrowser *)n didRemoveService:(NSNetService *)s moreComing:(BOOL)m	{
-	//NSLog(@"OSCZeroConfDomain:netServiceBrowser:didRemoveService:moreComing:");
+	//NSLog(@"%s",__func__);
 	//	tell the domainManager the service is being removed
 	if (domainManager != nil)	{
 		[domainManager serviceRemoved:s];
@@ -108,7 +108,7 @@
 
 //	NSNetService delegate methods
 - (void)netService:(NSNetService *)n didNotResolve:(NSDictionary *)err	{
-	//NSLog(@"OSCZeroConfDomain:netService:didNotResolve:");
+	//NSLog(@"%s",__func__);
 	NSLog(@"\t\terr resolving domain: %@",err);
 	//	tell the net service to stop
 	[n stop];
@@ -118,7 +118,7 @@
 	pthread_rwlock_unlock(&servicesLock);
 }
 - (void)netServiceDidResolveAddress:(NSNetService *)n	{
-	//NSLog(@"OSCZeroConfDomain:netServiceDidResolveAddress:");
+	//NSLog(@"%s",__func__);
 	//	tell the net service to stop, since it's resolved the address
 	[n stop];
 	//	tell the domainManager about the resolved service

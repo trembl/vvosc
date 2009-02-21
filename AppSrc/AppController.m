@@ -56,18 +56,14 @@
 	//	fake an outputs-changed notification to make sure my list of destinations updates (in case it refreshes before i'm awake)
 	[self oscOutputsChangedNotification:nil];
 }
-/*
-- (void) oscMessageReceived:(NSDictionary *)d	{
-	if (d == nil)
-		return;
-	//NSLog(@"%@",d);
-	[self displayPackets];
+
+- (void) receivedOSCMessage:(OSCMessage *)m	{
+	//NSLog(@"%s ... %@",__func__,m);
+	//[self displayPackets];
 }
-*/
-- (void) receivedOSCVal:(id)v forAddress:(NSString *)a	{
-	[self displayPackets];
-}
+
 - (void) displayPackets	{
+	//NSLog(@"%s",__func__);
 	NSArray				*localPacketArray = [NSArray arrayWithArray:[(OSCInPortRetainsRaw *)inPort packetStringArray]];
 	NSEnumerator		*it = [localPacketArray reverseObjectEnumerator];
 	NSDictionary		*dictPtr;
@@ -162,7 +158,7 @@
 	
 	
 	//	make a message to the specified address
-	msg = [OSCMessage createMessageToAddress:[oscAddressField stringValue]];
+	msg = [OSCMessage createWithAddress:[oscAddressField stringValue]];
 	
 	
 	//	fill the message with values from the relevant UI item
@@ -215,7 +211,7 @@
 }
 
 - (IBAction) intTest:(id)sender	{
-	NSLog(@"AppController:intTest:");
+	//NSLog(@"AppController:intTest:");
 	OSCBundle		*bundle = nil;
 	OSCBundle		*altBundle = nil;
 	OSCBundle		*mainBundle = nil;
@@ -229,20 +225,20 @@
 	
 	//	make a bundle with a single message of the appropriate type
 	bundle = [OSCBundle create];
-	msg1 = [OSCMessage createMessageToAddress:@"/singleInt"];
+	msg1 = [OSCMessage createWithAddress:@"/singleInt"];
 	[msg1 addInt:2147483647];
 	[bundle addElement:msg1];
 	//	make a bundle with several messages (with several vals each) of the appropriate type
 	altBundle = [OSCBundle create];
-	msg1 = [OSCMessage createMessageToAddress:@"/multipleInts1"];
+	msg1 = [OSCMessage createWithAddress:@"/multipleInts1"];
 	[msg1 addInt:1];
 	[msg1 addInt:2];
 	[msg1 addInt:3];
-	msg2 = [OSCMessage createMessageToAddress:@"/multipleInts2"];
+	msg2 = [OSCMessage createWithAddress:@"/multipleInts2"];
 	[msg2 addInt:4];
 	[msg2 addInt:5];
 	[msg2 addInt:6];
-	msg3 = [OSCMessage createMessageToAddress:@"/multiplierInts3"];
+	msg3 = [OSCMessage createWithAddress:@"/multiplierInts3"];
 	[msg3 addInt:7];
 	[msg3 addInt:8];
 	[msg3 addInt:9];
@@ -261,7 +257,7 @@
 	[manualOutPort sendThisPacket:pack];
 }
 - (IBAction) floatTest:(id)sender	{
-	NSLog(@"AppController:floatTest:");
+	//NSLog(@"AppController:floatTest:");
 	OSCBundle		*bundle = nil;
 	OSCBundle		*altBundle = nil;
 	OSCBundle		*mainBundle = nil;
@@ -275,20 +271,20 @@
 	
 	//	make a bundle with a single message of the appropriate type
 	bundle = [OSCBundle create];
-	msg1 = [OSCMessage createMessageToAddress:@"/singleFloat"];
+	msg1 = [OSCMessage createWithAddress:@"/singleFloat"];
 	[msg1 addFloat:1.1];
 	[bundle addElement:msg1];
 	//	make a bundle with several messages (with several vals each) of the appropriate type
 	altBundle = [OSCBundle create];
-	msg1 = [OSCMessage createMessageToAddress:@"/multipleFloats1"];
+	msg1 = [OSCMessage createWithAddress:@"/multipleFloats1"];
 	[msg1 addFloat:2.1];
 	[msg1 addFloat:3.2];
 	[msg1 addFloat:4.3];
-	msg2 = [OSCMessage createMessageToAddress:@"/multipleFloats2"];
+	msg2 = [OSCMessage createWithAddress:@"/multipleFloats2"];
 	[msg2 addFloat:5.4];
 	[msg2 addFloat:6.5];
 	[msg2 addFloat:7.6];
-	msg3 = [OSCMessage createMessageToAddress:@"/multiplierFloats3"];
+	msg3 = [OSCMessage createWithAddress:@"/multiplierFloats3"];
 	[msg3 addFloat:8.7];
 	[msg3 addFloat:9.8];
 	[msg3 addFloat:10.9];
@@ -307,7 +303,7 @@
 	[manualOutPort sendThisPacket:pack];
 }
 - (IBAction) colorTest:(id)sender	{
-	NSLog(@"AppController:colorTest:");
+	//NSLog(@"AppController:colorTest:");
 	OSCBundle		*bundle = nil;
 	OSCBundle		*altBundle = nil;
 	OSCBundle		*mainBundle = nil;
@@ -321,20 +317,20 @@
 	
 	//	make a bundle with a single message of the appropriate type
 	bundle = [OSCBundle create];
-	msg1 = [OSCMessage createMessageToAddress:@"/singleColor"];
+	msg1 = [OSCMessage createWithAddress:@"/singleColor"];
 	[msg1 addColor:[NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:0.1]];
 	[bundle addElement:msg1];
 	//	make a bundle with several messages (with several vals each) of the appropriate type
 	altBundle = [OSCBundle create];
-	msg1 = [OSCMessage createMessageToAddress:@"/multipleColors1"];
+	msg1 = [OSCMessage createWithAddress:@"/multipleColors1"];
 	[msg1 addColor:[NSColor colorWithDeviceRed:0.0 green:0.0 blue:1.0 alpha:0.1]];
 	[msg1 addColor:[NSColor colorWithDeviceRed:0.0 green:1.0 blue:0.0 alpha:0.1]];
 	[msg1 addColor:[NSColor colorWithDeviceRed:0.0 green:1.0 blue:1.0 alpha:0.1]];
-	msg2 = [OSCMessage createMessageToAddress:@"/multipleColors2"];
+	msg2 = [OSCMessage createWithAddress:@"/multipleColors2"];
 	[msg2 addColor:[NSColor colorWithDeviceRed:1.0 green:0.0 blue:0.0 alpha:0.1]];
 	[msg2 addColor:[NSColor colorWithDeviceRed:1.0 green:0.0 blue:1.0 alpha:0.1]];
 	[msg2 addColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.0 alpha:0.1]];
-	msg3 = [OSCMessage createMessageToAddress:@"/multiplierColors3"];
+	msg3 = [OSCMessage createWithAddress:@"/multiplierColors3"];
 	[msg3 addColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:0.1]];
 	[msg3 addColor:[NSColor colorWithDeviceRed:0.0 green:0.0 blue:1.0 alpha:0.1]];
 	[msg3 addColor:[NSColor colorWithDeviceRed:0.0 green:1.0 blue:0.0 alpha:0.1]];
@@ -353,7 +349,7 @@
 	[manualOutPort sendThisPacket:pack];
 }
 - (IBAction) stringTest:(id)sender	{
-	NSLog(@"AppController:stringTest:");
+	//NSLog(@"AppController:stringTest:");
 	OSCBundle		*bundle = nil;
 	OSCBundle		*altBundle = nil;
 	OSCBundle		*mainBundle = nil;
@@ -368,20 +364,20 @@
 	
 	//	make a bundle with a single message of the appropriate type
 	bundle = [OSCBundle create];
-	msg1 = [OSCMessage createMessageToAddress:@"/singleString"];
+	msg1 = [OSCMessage createWithAddress:@"/singleString"];
 	[msg1 addString:@"singlestring"];
 	[bundle addElement:msg1];
 	//	make a bundle with several messages (with several vals each) of the appropriate type
 	altBundle = [OSCBundle create];
-	msg1 = [OSCMessage createMessageToAddress:@"/multipleStrings1"];
+	msg1 = [OSCMessage createWithAddress:@"/multipleStrings1"];
 	[msg1 addString:@"first mult string"];
 	[msg1 addString:@"second mult string"];
 	[msg1 addString:@"third mult string"];
-	msg2 = [OSCMessage createMessageToAddress:@"/multipleStrings2"];
+	msg2 = [OSCMessage createWithAddress:@"/multipleStrings2"];
 	[msg2 addString:@"first mult string B"];
 	[msg2 addString:@"second mult string B"];
 	[msg2 addString:@"third mult string B"];
-	msg3 = [OSCMessage createMessageToAddress:@"/multiplierStrings3"];
+	msg3 = [OSCMessage createWithAddress:@"/multiplierStrings3"];
 	[msg3 addString:@"first mult string 3"];
 	[msg3 addString:@"second mult string 3"];
 	[msg3 addString:@"third mult string 3"];
@@ -401,7 +397,7 @@
 	[manualOutPort sendThisPacket:pack];
 }
 - (IBAction) lengthTest:(id)sender	{
-	NSLog(@"AppController:lengthTest:");
+	//NSLog(@"AppController:lengthTest:");
 	OSCBundle		*mainBundle = [OSCBundle create];
 	NSString		*addressPath = [NSString stringWithString:@"/aSingleButFairlyLongAddressPath"];
 	OSCMessage		*msgPtr;
@@ -409,7 +405,7 @@
 	OSCPacket		*pack;
 	
 	for (i=0; i<100; ++i)	{
-		msgPtr = [OSCMessage createMessageToAddress:addressPath];
+		msgPtr = [OSCMessage createWithAddress:addressPath];
 		[msgPtr addFloat:(i/100.0)];
 		[mainBundle addElement:msgPtr];
 	}

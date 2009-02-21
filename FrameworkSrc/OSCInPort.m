@@ -52,7 +52,6 @@
 		if (l != nil)
 			portLabel = [l copy];
 		
-		scratchDict = [[NSMutableDictionary dictionaryWithCapacity:0] retain];
 		scratchArray = [[NSMutableArray arrayWithCapacity:0] retain];
 		
 		delegate = nil;
@@ -73,9 +72,6 @@
 	//NSLog(@"OSCInPort:dealloc:");
 	if (!deleted)
 		[self prepareToBeDeleted];
-	if (scratchDict != nil)
-		[scratchDict release];
-	scratchDict = nil;
 	if (scratchArray != nil)
 		[scratchArray release];
 	scratchArray = nil;
@@ -192,7 +188,7 @@
 	[pool release];
 }
 - (void) OSCThreadProc:(NSTimer *)t	{
-	//NSLog(@"OSCInPort:OSCThreadProc:");
+	//NSLog(@"%s",__func__);
 	//	if i'm no longer supposed to be running, kill the thread
 	if (!running)	{
 		if (threadTimer != nil)	{
@@ -261,26 +257,21 @@
 				length which needs to be parsed.  the buffer doesn't contain
 				multiple messages, or multiple root-level bundles
 			*/
-			
 			[self parseRawBuffer:buf ofMaxLength:numBytes];
 		}
 		
 		readyFileCount = select(sock+1, &readFileDescriptor, (fd_set *)NULL, (fd_set *)NULL, &timeout);
 	}
 	//	if there's stuff in the scratch dict, i have to pass the info on to my delegate
-	if ([scratchDict count] > 0)	{
-		NSDictionary		*tmpDict = nil;
+	if ([scratchArray count] > 0)	{
 		NSArray				*tmpArray = nil;
 		
 		pthread_mutex_lock(&lock);
-			tmpDict = [NSDictionary dictionaryWithDictionary:scratchDict];
-			[scratchDict removeAllObjects];
 			tmpArray = [NSArray arrayWithArray:scratchArray];
 			[scratchArray removeAllObjects];
 		pthread_mutex_unlock(&lock);
 		
 		[self handleScratchArray:tmpArray];
-		[self handleParsedScratchDict:tmpDict];
 	}
 	
 	//	bump the threadTimercount, drain the autorelease pool periodically
@@ -294,57 +285,36 @@
 	this method exists so subclasses of OSCInPort can subclass around this for custom behavior
 */
 - (void) parseRawBuffer:(unsigned char *)b ofMaxLength:(int)l	{
+	//NSLog(@"%s ... %s, %ld",__func__,b,l);
 	[OSCPacket
 		parseRawBuffer:b
 		ofMaxLength:l
 		toInPort:self];
 }
 /*!
-	if you don't want to bother with delegates (or you're not using OSCManager), you can override this method in your subclass of OSCInPort to receive the coalesced osc data (the passed dict contains an array of objects).  by default, this method just calls "oscMessageReceived:" with the in port's delegate.
-*/
-- (void) handleParsedScratchDict:(NSDictionary *)d	{
-	//NSLog(@"OSCInPort:handleParsedScratchDict: ... %@",d);
-	if ((delegate != nil) && ([delegate respondsToSelector:@selector(oscMessageReceived:)]))
-		[delegate oscMessageReceived:d];
-}
-/*!
-	if you don't want to bother with delegates (or you're not using OSCManager), you can override this method in your subclass of OSCInPort to receive an array of AddressValPair objects.  by default, this method just calls "receivedOSCVal:forAddress:" with the in port's delegate for each of the items in the passed array.
+	if you don't want to bother with delegates (or you're not using OSCManager), you can override this method in your subclass of OSCInPort to receive an array of AddressValPair objects.  by default, this method just calls "receivedOSCMessage:" with the in port's delegate for each of the items in the passed array.
 */
 - (void) handleScratchArray:(NSArray *)a	{
-	//NSLog(@"OSCInPort:handleScratchArray: ... %@",a);
-	if ((delegate != nil) && ([delegate respondsToSelector:@selector(receivedOSCVal:forAddress:)]))	{
+	//NSLog(@"%s",__func__);
+	if ((delegate != nil) && ([delegate respondsToSelector:@selector(receivedOSCMessage:)]))	{
 		NSEnumerator		*it = [a objectEnumerator];
-		AddressValPair		*anObj;
+		OSCMessage			*anObj;
 		while (anObj = [it nextObject])	{
-			[delegate receivedOSCVal:[anObj val] forAddress:[anObj address]];
+			[delegate receivedOSCMessage:anObj];
 		}
 	}
 }
 /*
-	this method exists so received messages can be added to my scratch dict and scratch array for output.  you should never need to call this method!
+	this method exists so received OSCMessage objects can be added to my scratch dict and scratch array for output.  you should never need to call this method!
 */
-- (void) addValue:(id)val toAddressPath:(NSString *)p	{
-	//NSLog(@"OSCInPort:addValue:toAddressPath: ... %@ : %@",p,val);
+- (void) addValue:(OSCMessage *)val toAddressPath:(NSString *)p	{
+	//NSLog(@"%s ... %@",__func__,val);
 	if ((val == nil) || (p == nil))
 		return;
 	
-	NSMutableArray		*addressArray = nil;
-	AddressValPair		*pair = nil;
-	
 	pthread_mutex_lock(&lock);
-		//	make an address/val pair, add it to the array
-		pair = [AddressValPair createWithAddress:p val:val];
-		[scratchArray addObject:pair];
-		
-		//	find the array of msgs in the scratch dict (coalesced messages)
-		addressArray = [scratchDict objectForKey:p];
-		if (addressArray == nil)	{
-			//	if there's no msg array, make one
-			addressArray = [NSMutableArray arrayWithCapacity:0];
-			[scratchDict setObject:addressArray forKey:p];
-		}
-		//	add the val to the msg array
-		[addressArray addObject:val];
+		//	add the osc path msg to the scratch array
+		[scratchArray addObject:val];
 	pthread_mutex_unlock(&lock);
 }
 
@@ -363,8 +333,6 @@
 	sock = -1;
 	//	clear out the scratch dict/array
 	pthread_mutex_lock(&lock);
-		if (scratchDict != nil)
-			[scratchDict removeAllObjects];
 		if (scratchArray != nil)
 			[scratchArray removeAllObjects];
 	pthread_mutex_unlock(&lock);
@@ -383,8 +351,6 @@
 		sock = -1;
 		//	clear out the scratch dict
 		pthread_mutex_lock(&lock);
-			if (scratchDict != nil)
-				[scratchDict removeAllObjects];
 			if (scratchArray != nil)
 				[scratchArray removeAllObjects];
 		pthread_mutex_unlock(&lock);

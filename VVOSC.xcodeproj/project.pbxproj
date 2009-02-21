@@ -53,8 +53,6 @@
 		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
 		9609B8140E993EBF0095836C /* VVOSC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DC2EF5B0486A6940098B216 /* VVOSC.framework */; };
 		9609B8530E9940940095836C /* VVOSC.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8DC2EF5B0486A6940098B216 /* VVOSC.framework */; };
-		9612139B0EF1D97D00F21DD9 /* AddressValPair.h in Headers */ = {isa = PBXBuildFile; fileRef = 961213990EF1D97D00F21DD9 /* AddressValPair.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9612139C0EF1D97D00F21DD9 /* AddressValpair.m in Sources */ = {isa = PBXBuildFile; fileRef = 9612139A0EF1D97D00F21DD9 /* AddressValpair.m */; };
 		9612C1910EEF81FC00BAD514 /* OSCZeroConfManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9612C18D0EEF81FC00BAD514 /* OSCZeroConfManager.m */; };
 		9612C1920EEF81FC00BAD514 /* OSCZeroConfDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = 9612C18E0EEF81FC00BAD514 /* OSCZeroConfDomain.m */; };
 		9612C1930EEF81FC00BAD514 /* OSCZeroConfManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 9612C18F0EEF81FC00BAD514 /* OSCZeroConfManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -79,8 +77,6 @@
 		964687E30E884F4E00CCC231 /* OSCManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 964687D70E884F4E00CCC231 /* OSCManager.m */; };
 		964687E40E884F4E00CCC231 /* OSCMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 964687D80E884F4E00CCC231 /* OSCMessage.m */; };
 		9653921A0E85F60E00A719BF /* VVOSC.h in Headers */ = {isa = PBXBuildFile; fileRef = 965392190E85F60E00A719BF /* VVOSC.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		967FDE440EFAA6AE00BCF87E /* AddressValPair.h in Headers */ = {isa = PBXBuildFile; fileRef = 961213990EF1D97D00F21DD9 /* AddressValPair.h */; };
-		967FDE450EFAA6AF00BCF87E /* AddressValpair.m in Sources */ = {isa = PBXBuildFile; fileRef = 9612139A0EF1D97D00F21DD9 /* AddressValpair.m */; };
 		967FDE460EFAA6AF00BCF87E /* OSCBundle.h in Headers */ = {isa = PBXBuildFile; fileRef = 964687D40E884F4E00CCC231 /* OSCBundle.h */; };
 		967FDE470EFAA6B000BCF87E /* OSCBundle.m in Sources */ = {isa = PBXBuildFile; fileRef = 964687D50E884F4E00CCC231 /* OSCBundle.m */; };
 		967FDE480EFAA6B000BCF87E /* OSCInPort.h in Headers */ = {isa = PBXBuildFile; fileRef = 964687CF0E884F4E00CCC231 /* OSCInPort.h */; };
@@ -98,8 +94,22 @@
 		967FDE540EFAA6B500BCF87E /* OSCZeroConfManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 9612C18F0EEF81FC00BAD514 /* OSCZeroConfManager.h */; };
 		967FDE550EFAA6B500BCF87E /* OSCZeroConfManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9612C18D0EEF81FC00BAD514 /* OSCZeroConfManager.m */; };
 		967FDE560EFAA6B600BCF87E /* VVOSC.h in Headers */ = {isa = PBXBuildFile; fileRef = 965392190E85F60E00A719BF /* VVOSC.h */; };
-		96A059CD0EFACE1A00E82377 /* AddressValPair.h in Headers */ = {isa = PBXBuildFile; fileRef = 961213990EF1D97D00F21DD9 /* AddressValPair.h */; };
-		96A059CE0EFACE1B00E82377 /* AddressValpair.m in Sources */ = {isa = PBXBuildFile; fileRef = 9612139A0EF1D97D00F21DD9 /* AddressValpair.m */; };
+		969F5B9E0F505F7100430656 /* OSCValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 969F5B980F505F7100430656 /* OSCValue.m */; };
+		969F5BA00F505F7100430656 /* OSCValue.h in Headers */ = {isa = PBXBuildFile; fileRef = 969F5B9A0F505F7100430656 /* OSCValue.h */; };
+		969F5BA10F505F7100430656 /* OSCAddressSpace.m in Sources */ = {isa = PBXBuildFile; fileRef = 969F5B9B0F505F7100430656 /* OSCAddressSpace.m */; };
+		969F5BA20F505F7100430656 /* OSCAddressSpace.h in Headers */ = {isa = PBXBuildFile; fileRef = 969F5B9C0F505F7100430656 /* OSCAddressSpace.h */; };
+		969F5BA40F505F7100430656 /* OSCValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 969F5B980F505F7100430656 /* OSCValue.m */; };
+		969F5BA60F505F7100430656 /* OSCValue.h in Headers */ = {isa = PBXBuildFile; fileRef = 969F5B9A0F505F7100430656 /* OSCValue.h */; };
+		969F5BA70F505F7100430656 /* OSCAddressSpace.m in Sources */ = {isa = PBXBuildFile; fileRef = 969F5B9B0F505F7100430656 /* OSCAddressSpace.m */; };
+		969F5BA80F505F7100430656 /* OSCAddressSpace.h in Headers */ = {isa = PBXBuildFile; fileRef = 969F5B9C0F505F7100430656 /* OSCAddressSpace.h */; };
+		969F5BAA0F505F7100430656 /* OSCValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 969F5B980F505F7100430656 /* OSCValue.m */; };
+		969F5BAC0F505F7100430656 /* OSCValue.h in Headers */ = {isa = PBXBuildFile; fileRef = 969F5B9A0F505F7100430656 /* OSCValue.h */; };
+		969F5BAD0F505F7100430656 /* OSCAddressSpace.m in Sources */ = {isa = PBXBuildFile; fileRef = 969F5B9B0F505F7100430656 /* OSCAddressSpace.m */; };
+		969F5BAE0F505F7100430656 /* OSCAddressSpace.h in Headers */ = {isa = PBXBuildFile; fileRef = 969F5B9C0F505F7100430656 /* OSCAddressSpace.h */; };
+		969F5BB00F505F7100430656 /* OSCValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 969F5B980F505F7100430656 /* OSCValue.m */; };
+		969F5BB20F505F7100430656 /* OSCValue.h in Headers */ = {isa = PBXBuildFile; fileRef = 969F5B9A0F505F7100430656 /* OSCValue.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		969F5BB30F505F7100430656 /* OSCAddressSpace.m in Sources */ = {isa = PBXBuildFile; fileRef = 969F5B9B0F505F7100430656 /* OSCAddressSpace.m */; };
+		969F5BB40F505F7100430656 /* OSCAddressSpace.h in Headers */ = {isa = PBXBuildFile; fileRef = 969F5B9C0F505F7100430656 /* OSCAddressSpace.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		96A059CF0EFACE1B00E82377 /* OSCBundle.h in Headers */ = {isa = PBXBuildFile; fileRef = 964687D40E884F4E00CCC231 /* OSCBundle.h */; };
 		96A059D00EFACE1E00E82377 /* OSCBundle.m in Sources */ = {isa = PBXBuildFile; fileRef = 964687D50E884F4E00CCC231 /* OSCBundle.m */; };
 		96A059D10EFACE1F00E82377 /* OSCInPort.h in Headers */ = {isa = PBXBuildFile; fileRef = 964687CF0E884F4E00CCC231 /* OSCInPort.h */; };
@@ -117,8 +127,6 @@
 		96A059DD0EFACE2400E82377 /* OSCZeroConfManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 9612C18F0EEF81FC00BAD514 /* OSCZeroConfManager.h */; };
 		96A059DE0EFACE2500E82377 /* OSCZeroConfManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9612C18D0EEF81FC00BAD514 /* OSCZeroConfManager.m */; };
 		96A059DF0EFACE2500E82377 /* VVOSC.h in Headers */ = {isa = PBXBuildFile; fileRef = 965392190E85F60E00A719BF /* VVOSC.h */; };
-		96EB12300EFAA65500B2D581 /* AddressValPair.h in Headers */ = {isa = PBXBuildFile; fileRef = 961213990EF1D97D00F21DD9 /* AddressValPair.h */; };
-		96EB12310EFAA65500B2D581 /* AddressValpair.m in Sources */ = {isa = PBXBuildFile; fileRef = 9612139A0EF1D97D00F21DD9 /* AddressValpair.m */; };
 		96EB12320EFAA65600B2D581 /* OSCBundle.h in Headers */ = {isa = PBXBuildFile; fileRef = 964687D40E884F4E00CCC231 /* OSCBundle.h */; };
 		96EB12330EFAA65600B2D581 /* OSCBundle.m in Sources */ = {isa = PBXBuildFile; fileRef = 964687D50E884F4E00CCC231 /* OSCBundle.m */; };
 		96EB12340EFAA65700B2D581 /* OSCInPort.h in Headers */ = {isa = PBXBuildFile; fileRef = 964687CF0E884F4E00CCC231 /* OSCInPort.h */; };
@@ -218,8 +226,6 @@
 		32DBCF5E0370ADEE00C91783 /* VVOSC_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VVOSC_Prefix.pch; sourceTree = "<group>"; };
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8DC2EF5B0486A6940098B216 /* VVOSC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VVOSC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		961213990EF1D97D00F21DD9 /* AddressValPair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddressValPair.h; path = FrameworkSrc/AddressValPair.h; sourceTree = "<group>"; };
-		9612139A0EF1D97D00F21DD9 /* AddressValpair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AddressValpair.m; path = FrameworkSrc/AddressValpair.m; sourceTree = "<group>"; };
 		9612C18D0EEF81FC00BAD514 /* OSCZeroConfManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSCZeroConfManager.m; path = FrameworkSrc/OSCZeroConfManager.m; sourceTree = "<group>"; };
 		9612C18E0EEF81FC00BAD514 /* OSCZeroConfDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSCZeroConfDomain.m; path = FrameworkSrc/OSCZeroConfDomain.m; sourceTree = "<group>"; };
 		9612C18F0EEF81FC00BAD514 /* OSCZeroConfManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSCZeroConfManager.h; path = FrameworkSrc/OSCZeroConfManager.h; sourceTree = "<group>"; };
@@ -244,6 +250,10 @@
 		965392170E85F5DD00A719BF /* AppController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppController.m; path = AppSrc/AppController.m; sourceTree = "<group>"; };
 		965392190E85F60E00A719BF /* VVOSC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VVOSC.h; path = FrameworkSrc/VVOSC.h; sourceTree = "<group>"; };
 		967FDE3C0EFAA6A600BCF87E /* libVVOSC.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libVVOSC.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		969F5B980F505F7100430656 /* OSCValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSCValue.m; path = FrameworkSrc/OSCValue.m; sourceTree = "<group>"; };
+		969F5B9A0F505F7100430656 /* OSCValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSCValue.h; path = FrameworkSrc/OSCValue.h; sourceTree = "<group>"; };
+		969F5B9B0F505F7100430656 /* OSCAddressSpace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSCAddressSpace.m; path = FrameworkSrc/OSCAddressSpace.m; sourceTree = "<group>"; };
+		969F5B9C0F505F7100430656 /* OSCAddressSpace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSCAddressSpace.h; path = FrameworkSrc/OSCAddressSpace.h; sourceTree = "<group>"; };
 		96A059B40EFACDDB00E82377 /* libVVOSC.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libVVOSC.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		96E3DF090E96802000B706F8 /* OSCInPortRetainsRaw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSCInPortRetainsRaw.h; path = AppSrc/OSCInPortRetainsRaw.h; sourceTree = "<group>"; };
 		96E3DF0A0E96802000B706F8 /* OSCInPortRetainsRaw.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSCInPortRetainsRaw.m; path = AppSrc/OSCInPortRetainsRaw.m; sourceTree = "<group>"; };
@@ -345,6 +355,10 @@
 			isa = PBXGroup;
 			children = (
 				965392190E85F60E00A719BF /* VVOSC.h */,
+				969F5B9A0F505F7100430656 /* OSCValue.h */,
+				969F5B980F505F7100430656 /* OSCValue.m */,
+				969F5B9C0F505F7100430656 /* OSCAddressSpace.h */,
+				969F5B9B0F505F7100430656 /* OSCAddressSpace.m */,
 				964687D00E884F4E00CCC231 /* OSCManager.h */,
 				964687D70E884F4E00CCC231 /* OSCManager.m */,
 				964687CF0E884F4E00CCC231 /* OSCInPort.h */,
@@ -357,12 +371,7 @@
 				964687D50E884F4E00CCC231 /* OSCBundle.m */,
 				964687D10E884F4E00CCC231 /* OSCMessage.h */,
 				964687D80E884F4E00CCC231 /* OSCMessage.m */,
-				9612C18F0EEF81FC00BAD514 /* OSCZeroConfManager.h */,
-				9612C18D0EEF81FC00BAD514 /* OSCZeroConfManager.m */,
-				9612C1900EEF81FC00BAD514 /* OSCZeroConfDomain.h */,
-				9612C18E0EEF81FC00BAD514 /* OSCZeroConfDomain.m */,
-				961213990EF1D97D00F21DD9 /* AddressValPair.h */,
-				9612139A0EF1D97D00F21DD9 /* AddressValpair.m */,
+				969F5BB90F50601F00430656 /* Bonjour \ Zero-Conf Networking */,
 			);
 			name = Framework;
 			sourceTree = "<group>";
@@ -407,6 +416,17 @@
 			name = "Sample App";
 			sourceTree = "<group>";
 		};
+		969F5BB90F50601F00430656 /* Bonjour \ Zero-Conf Networking */ = {
+			isa = PBXGroup;
+			children = (
+				9612C18F0EEF81FC00BAD514 /* OSCZeroConfManager.h */,
+				9612C18D0EEF81FC00BAD514 /* OSCZeroConfManager.m */,
+				9612C1900EEF81FC00BAD514 /* OSCZeroConfDomain.h */,
+				9612C18E0EEF81FC00BAD514 /* OSCZeroConfDomain.m */,
+			);
+			name = "Bonjour \\ Zero-Conf Networking";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -423,7 +443,8 @@
 				964687E20E884F4E00CCC231 /* OSCPacket.h in Headers */,
 				9612C1930EEF81FC00BAD514 /* OSCZeroConfManager.h in Headers */,
 				9612C1940EEF81FC00BAD514 /* OSCZeroConfDomain.h in Headers */,
-				9612139B0EF1D97D00F21DD9 /* AddressValPair.h in Headers */,
+				969F5BB20F505F7100430656 /* OSCValue.h in Headers */,
+				969F5BB40F505F7100430656 /* OSCAddressSpace.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -431,7 +452,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				967FDE440EFAA6AE00BCF87E /* AddressValPair.h in Headers */,
 				967FDE460EFAA6AF00BCF87E /* OSCBundle.h in Headers */,
 				967FDE480EFAA6B000BCF87E /* OSCInPort.h in Headers */,
 				967FDE4A0EFAA6B100BCF87E /* OSCManager.h in Headers */,
@@ -441,6 +461,8 @@
 				967FDE520EFAA6B400BCF87E /* OSCZeroConfDomain.h in Headers */,
 				967FDE540EFAA6B500BCF87E /* OSCZeroConfManager.h in Headers */,
 				967FDE560EFAA6B600BCF87E /* VVOSC.h in Headers */,
+				969F5BAC0F505F7100430656 /* OSCValue.h in Headers */,
+				969F5BAE0F505F7100430656 /* OSCAddressSpace.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -448,7 +470,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				96A059CD0EFACE1A00E82377 /* AddressValPair.h in Headers */,
 				96A059CF0EFACE1B00E82377 /* OSCBundle.h in Headers */,
 				96A059D10EFACE1F00E82377 /* OSCInPort.h in Headers */,
 				96A059D30EFACE1F00E82377 /* OSCManager.h in Headers */,
@@ -458,6 +479,8 @@
 				96A059DB0EFACE2300E82377 /* OSCZeroConfDomain.h in Headers */,
 				96A059DD0EFACE2400E82377 /* OSCZeroConfManager.h in Headers */,
 				96A059DF0EFACE2500E82377 /* VVOSC.h in Headers */,
+				969F5BA60F505F7100430656 /* OSCValue.h in Headers */,
+				969F5BA80F505F7100430656 /* OSCAddressSpace.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -465,7 +488,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				96EB12300EFAA65500B2D581 /* AddressValPair.h in Headers */,
 				96EB12320EFAA65600B2D581 /* OSCBundle.h in Headers */,
 				96EB12340EFAA65700B2D581 /* OSCInPort.h in Headers */,
 				96EB12360EFAA65800B2D581 /* OSCManager.h in Headers */,
@@ -475,6 +497,8 @@
 				96EB123E0EFAA65C00B2D581 /* OSCZeroConfDomain.h in Headers */,
 				96EB12400EFAA65D00B2D581 /* OSCZeroConfManager.h in Headers */,
 				96EB12420EFAA65E00B2D581 /* VVOSC.h in Headers */,
+				969F5BA00F505F7100430656 /* OSCValue.h in Headers */,
+				969F5BA20F505F7100430656 /* OSCAddressSpace.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -656,7 +680,8 @@
 				964687E40E884F4E00CCC231 /* OSCMessage.m in Sources */,
 				9612C1910EEF81FC00BAD514 /* OSCZeroConfManager.m in Sources */,
 				9612C1920EEF81FC00BAD514 /* OSCZeroConfDomain.m in Sources */,
-				9612139C0EF1D97D00F21DD9 /* AddressValpair.m in Sources */,
+				969F5BB00F505F7100430656 /* OSCValue.m in Sources */,
+				969F5BB30F505F7100430656 /* OSCAddressSpace.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -675,7 +700,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				967FDE450EFAA6AF00BCF87E /* AddressValpair.m in Sources */,
 				967FDE470EFAA6B000BCF87E /* OSCBundle.m in Sources */,
 				967FDE490EFAA6B000BCF87E /* OSCInPort.m in Sources */,
 				967FDE4B0EFAA6B100BCF87E /* OSCManager.m in Sources */,
@@ -684,6 +708,8 @@
 				967FDE510EFAA6B400BCF87E /* OSCPacket.m in Sources */,
 				967FDE530EFAA6B500BCF87E /* OSCZeroConfDomain.m in Sources */,
 				967FDE550EFAA6B500BCF87E /* OSCZeroConfManager.m in Sources */,
+				969F5BAA0F505F7100430656 /* OSCValue.m in Sources */,
+				969F5BAD0F505F7100430656 /* OSCAddressSpace.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -691,7 +717,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				96A059CE0EFACE1B00E82377 /* AddressValpair.m in Sources */,
 				96A059D00EFACE1E00E82377 /* OSCBundle.m in Sources */,
 				96A059D20EFACE1F00E82377 /* OSCInPort.m in Sources */,
 				96A059D40EFACE2000E82377 /* OSCManager.m in Sources */,
@@ -700,6 +725,8 @@
 				96A059DA0EFACE2300E82377 /* OSCPacket.m in Sources */,
 				96A059DC0EFACE2400E82377 /* OSCZeroConfDomain.m in Sources */,
 				96A059DE0EFACE2500E82377 /* OSCZeroConfManager.m in Sources */,
+				969F5BA40F505F7100430656 /* OSCValue.m in Sources */,
+				969F5BA70F505F7100430656 /* OSCAddressSpace.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -707,7 +734,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				96EB12310EFAA65500B2D581 /* AddressValpair.m in Sources */,
 				96EB12330EFAA65600B2D581 /* OSCBundle.m in Sources */,
 				96EB12350EFAA65700B2D581 /* OSCInPort.m in Sources */,
 				96EB12370EFAA65800B2D581 /* OSCManager.m in Sources */,
@@ -716,6 +742,8 @@
 				96EB123D0EFAA65B00B2D581 /* OSCPacket.m in Sources */,
 				96EB123F0EFAA65C00B2D581 /* OSCZeroConfDomain.m in Sources */,
 				96EB12410EFAA65D00B2D581 /* OSCZeroConfManager.m in Sources */,
+				969F5B9E0F505F7100430656 /* OSCValue.m in Sources */,
+				969F5BA10F505F7100430656 /* OSCAddressSpace.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
