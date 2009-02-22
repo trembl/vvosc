@@ -59,7 +59,7 @@
 
 - (void) receivedOSCMessage:(OSCMessage *)m	{
 	//NSLog(@"%s ... %@",__func__,m);
-	//[self displayPackets];
+	[self displayPackets];
 }
 
 - (void) displayPackets	{
