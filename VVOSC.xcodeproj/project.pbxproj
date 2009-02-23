@@ -76,6 +76,22 @@
 		964687E20E884F4E00CCC231 /* OSCPacket.h in Headers */ = {isa = PBXBuildFile; fileRef = 964687D60E884F4E00CCC231 /* OSCPacket.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		964687E30E884F4E00CCC231 /* OSCManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 964687D70E884F4E00CCC231 /* OSCManager.m */; };
 		964687E40E884F4E00CCC231 /* OSCMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 964687D80E884F4E00CCC231 /* OSCMessage.m */; };
+		9652EDFA0F52290A006A23AB /* MutLockArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 9652EDF80F52290A006A23AB /* MutLockArray.m */; };
+		9652EDFB0F52290A006A23AB /* MutLockArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 9652EDF90F52290A006A23AB /* MutLockArray.h */; };
+		9652EDFC0F52290A006A23AB /* MutLockArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 9652EDF80F52290A006A23AB /* MutLockArray.m */; };
+		9652EDFD0F52290A006A23AB /* MutLockArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 9652EDF90F52290A006A23AB /* MutLockArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9652EDFE0F52290A006A23AB /* MutLockArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 9652EDF80F52290A006A23AB /* MutLockArray.m */; };
+		9652EDFF0F52290A006A23AB /* MutLockArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 9652EDF90F52290A006A23AB /* MutLockArray.h */; };
+		9652EE000F52290A006A23AB /* MutLockArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 9652EDF80F52290A006A23AB /* MutLockArray.m */; };
+		9652EE010F52290A006A23AB /* MutLockArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 9652EDF90F52290A006A23AB /* MutLockArray.h */; };
+		9652EE080F522A44006A23AB /* OSCNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 9652EE060F522A44006A23AB /* OSCNode.h */; };
+		9652EE090F522A44006A23AB /* OSCNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 9652EE070F522A44006A23AB /* OSCNode.m */; };
+		9652EE0A0F522A44006A23AB /* OSCNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 9652EE060F522A44006A23AB /* OSCNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9652EE0B0F522A44006A23AB /* OSCNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 9652EE070F522A44006A23AB /* OSCNode.m */; };
+		9652EE0C0F522A44006A23AB /* OSCNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 9652EE060F522A44006A23AB /* OSCNode.h */; };
+		9652EE0D0F522A44006A23AB /* OSCNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 9652EE070F522A44006A23AB /* OSCNode.m */; };
+		9652EE0E0F522A44006A23AB /* OSCNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 9652EE060F522A44006A23AB /* OSCNode.h */; };
+		9652EE0F0F522A44006A23AB /* OSCNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 9652EE070F522A44006A23AB /* OSCNode.m */; };
 		9653921A0E85F60E00A719BF /* VVOSC.h in Headers */ = {isa = PBXBuildFile; fileRef = 965392190E85F60E00A719BF /* VVOSC.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		967FDE460EFAA6AF00BCF87E /* OSCBundle.h in Headers */ = {isa = PBXBuildFile; fileRef = 964687D40E884F4E00CCC231 /* OSCBundle.h */; };
 		967FDE470EFAA6B000BCF87E /* OSCBundle.m in Sources */ = {isa = PBXBuildFile; fileRef = 964687D50E884F4E00CCC231 /* OSCBundle.m */; };
@@ -244,6 +260,10 @@
 		964687D60E884F4E00CCC231 /* OSCPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSCPacket.h; path = FrameworkSrc/OSCPacket.h; sourceTree = "<group>"; };
 		964687D70E884F4E00CCC231 /* OSCManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSCManager.m; path = FrameworkSrc/OSCManager.m; sourceTree = "<group>"; };
 		964687D80E884F4E00CCC231 /* OSCMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSCMessage.m; path = FrameworkSrc/OSCMessage.m; sourceTree = "<group>"; };
+		9652EDF80F52290A006A23AB /* MutLockArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MutLockArray.m; path = FrameworkSrc/MutLockArray.m; sourceTree = "<group>"; };
+		9652EDF90F52290A006A23AB /* MutLockArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MutLockArray.h; path = FrameworkSrc/MutLockArray.h; sourceTree = "<group>"; };
+		9652EE060F522A44006A23AB /* OSCNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSCNode.h; path = FrameworkSrc/OSCNode.h; sourceTree = "<group>"; };
+		9652EE070F522A44006A23AB /* OSCNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSCNode.m; path = FrameworkSrc/OSCNode.m; sourceTree = "<group>"; };
 		965392010E85C89100A719BF /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = AppSrc/main.m; sourceTree = "<group>"; };
 		965392040E85C8BA00A719BF /* MainMenu.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = MainMenu.xib; path = AppSrc/MainMenu.xib; sourceTree = "<group>"; };
 		965392160E85F5DD00A719BF /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppController.h; path = AppSrc/AppController.h; sourceTree = "<group>"; };
@@ -355,8 +375,9 @@
 			isa = PBXGroup;
 			children = (
 				965392190E85F60E00A719BF /* VVOSC.h */,
-				969F5B9A0F505F7100430656 /* OSCValue.h */,
-				969F5B980F505F7100430656 /* OSCValue.m */,
+				96EA37430F51EACB00E6998D /* basic data types */,
+				9652EE060F522A44006A23AB /* OSCNode.h */,
+				9652EE070F522A44006A23AB /* OSCNode.m */,
 				969F5B9C0F505F7100430656 /* OSCAddressSpace.h */,
 				969F5B9B0F505F7100430656 /* OSCAddressSpace.m */,
 				964687D00E884F4E00CCC231 /* OSCManager.h */,
@@ -365,12 +386,6 @@
 				964687D30E884F4E00CCC231 /* OSCInPort.m */,
 				964687CE0E884F4E00CCC231 /* OSCOutPort.h */,
 				964687CD0E884F4E00CCC231 /* OSCOutPort.m */,
-				964687D60E884F4E00CCC231 /* OSCPacket.h */,
-				964687D20E884F4E00CCC231 /* OSCPacket.m */,
-				964687D40E884F4E00CCC231 /* OSCBundle.h */,
-				964687D50E884F4E00CCC231 /* OSCBundle.m */,
-				964687D10E884F4E00CCC231 /* OSCMessage.h */,
-				964687D80E884F4E00CCC231 /* OSCMessage.m */,
 				969F5BB90F50601F00430656 /* Bonjour \ Zero-Conf Networking */,
 			);
 			name = Framework;
@@ -427,6 +442,23 @@
 			name = "Bonjour \\ Zero-Conf Networking";
 			sourceTree = "<group>";
 		};
+		96EA37430F51EACB00E6998D /* basic data types */ = {
+			isa = PBXGroup;
+			children = (
+				9652EDF90F52290A006A23AB /* MutLockArray.h */,
+				9652EDF80F52290A006A23AB /* MutLockArray.m */,
+				969F5B9A0F505F7100430656 /* OSCValue.h */,
+				969F5B980F505F7100430656 /* OSCValue.m */,
+				964687D10E884F4E00CCC231 /* OSCMessage.h */,
+				964687D80E884F4E00CCC231 /* OSCMessage.m */,
+				964687D40E884F4E00CCC231 /* OSCBundle.h */,
+				964687D50E884F4E00CCC231 /* OSCBundle.m */,
+				964687D60E884F4E00CCC231 /* OSCPacket.h */,
+				964687D20E884F4E00CCC231 /* OSCPacket.m */,
+			);
+			name = "basic data types";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -445,6 +477,8 @@
 				9612C1940EEF81FC00BAD514 /* OSCZeroConfDomain.h in Headers */,
 				969F5BB20F505F7100430656 /* OSCValue.h in Headers */,
 				969F5BB40F505F7100430656 /* OSCAddressSpace.h in Headers */,
+				9652EDFD0F52290A006A23AB /* MutLockArray.h in Headers */,
+				9652EE0A0F522A44006A23AB /* OSCNode.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -463,6 +497,8 @@
 				967FDE560EFAA6B600BCF87E /* VVOSC.h in Headers */,
 				969F5BAC0F505F7100430656 /* OSCValue.h in Headers */,
 				969F5BAE0F505F7100430656 /* OSCAddressSpace.h in Headers */,
+				9652EDFB0F52290A006A23AB /* MutLockArray.h in Headers */,
+				9652EE080F522A44006A23AB /* OSCNode.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -481,6 +517,8 @@
 				96A059DF0EFACE2500E82377 /* VVOSC.h in Headers */,
 				969F5BA60F505F7100430656 /* OSCValue.h in Headers */,
 				969F5BA80F505F7100430656 /* OSCAddressSpace.h in Headers */,
+				9652EDFF0F52290A006A23AB /* MutLockArray.h in Headers */,
+				9652EE0C0F522A44006A23AB /* OSCNode.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -499,6 +537,8 @@
 				96EB12420EFAA65E00B2D581 /* VVOSC.h in Headers */,
 				969F5BA00F505F7100430656 /* OSCValue.h in Headers */,
 				969F5BA20F505F7100430656 /* OSCAddressSpace.h in Headers */,
+				9652EE010F52290A006A23AB /* MutLockArray.h in Headers */,
+				9652EE0E0F522A44006A23AB /* OSCNode.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -682,6 +722,8 @@
 				9612C1920EEF81FC00BAD514 /* OSCZeroConfDomain.m in Sources */,
 				969F5BB00F505F7100430656 /* OSCValue.m in Sources */,
 				969F5BB30F505F7100430656 /* OSCAddressSpace.m in Sources */,
+				9652EDFC0F52290A006A23AB /* MutLockArray.m in Sources */,
+				9652EE0B0F522A44006A23AB /* OSCNode.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -710,6 +752,8 @@
 				967FDE550EFAA6B500BCF87E /* OSCZeroConfManager.m in Sources */,
 				969F5BAA0F505F7100430656 /* OSCValue.m in Sources */,
 				969F5BAD0F505F7100430656 /* OSCAddressSpace.m in Sources */,
+				9652EDFA0F52290A006A23AB /* MutLockArray.m in Sources */,
+				9652EE090F522A44006A23AB /* OSCNode.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -727,6 +771,8 @@
 				96A059DE0EFACE2500E82377 /* OSCZeroConfManager.m in Sources */,
 				969F5BA40F505F7100430656 /* OSCValue.m in Sources */,
 				969F5BA70F505F7100430656 /* OSCAddressSpace.m in Sources */,
+				9652EDFE0F52290A006A23AB /* MutLockArray.m in Sources */,
+				9652EE0D0F522A44006A23AB /* OSCNode.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -744,6 +790,8 @@
 				96EB12410EFAA65D00B2D581 /* OSCZeroConfManager.m in Sources */,
 				969F5B9E0F505F7100430656 /* OSCValue.m in Sources */,
 				969F5BA10F505F7100430656 /* OSCAddressSpace.m in Sources */,
+				9652EE000F52290A006A23AB /* MutLockArray.m in Sources */,
+				9652EE0F0F522A44006A23AB /* OSCNode.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

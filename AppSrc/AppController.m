@@ -75,16 +75,16 @@
 		case 0:		//	parsed
 			localKey = [NSString stringWithString:@"serial"];
 			break;
-		case 1:
-			localKey = [NSString stringWithString:@"coalesced"];
-			break;
-		case 2:		//	char
+		//case 1:
+		//	localKey = [NSString stringWithString:@"coalesced"];
+		//	break;
+		case 1:		//	char
 			localKey = [NSString stringWithString:@"char"];
 			break;
-		case 3:		//	dec
+		case 2:		//	dec
 			localKey = [NSString stringWithString:@"dec"];
 			break;
-		case 4:		//	hex
+		case 3:		//	hex
 			localKey = [NSString stringWithString:@"hex"];
 			break;
 	}

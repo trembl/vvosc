@@ -40,6 +40,17 @@ Incoming OSC data is initially received by an OSCInPort; fundamentally, in ports
 
 ...if you want to work with received OSC data, OSCManager's delegate must respond to this method!
 */
+
+
+
+
+@protocol OSCDelegateProtocol
+- (void) receivedOSCMessage:(OSCMessage *)m;
+@end
+
+
+
+
 @interface OSCManager : NSObject {
 	NSMutableArray			*inPortArray;	//	Array of OSCInPorts- do not access without using the lock!
 	NSMutableArray			*outPortArray;	//	Array of OSCOutPorts- do not access without using the lock!

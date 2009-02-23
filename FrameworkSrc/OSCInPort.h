@@ -23,13 +23,14 @@
 #import "OSCMessage.h"
 
 
+
+
 @protocol OSCInPortDelegateProtocol
 - (void) receivedOSCMessage:(OSCMessage *)m;
 @end
 
-@protocol OSCDelegateProtocol
-- (void) receivedOSCMessage:(OSCMessage *)m;
-@end
+
+
 
 ///	OSCInPort handles everything needed to receive OSC data on a given port
 /*!

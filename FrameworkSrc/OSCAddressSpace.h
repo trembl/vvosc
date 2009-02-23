@@ -11,12 +11,19 @@
 #else
 #import <Cocoa/Cocoa.h>
 #endif
+#import "MutLockArray.h"
+#import "OSCNode.h"
 
 
 
 
-@interface OSCAddressSpace : NSObject {
+@interface OSCAddressSpace : OSCNode {
 
 }
+
+- (OSCNode *) nodeForPath:(NSString *)p;
+- (void) dispatchMessage:(OSCMessage *)m;
+- (void) addDelegate:(id)d forPath:(NSString *)p;
+- (void) removeDelegate:(id)d forPath:(NSString *)p;
 
 @end
