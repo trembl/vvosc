@@ -21,8 +21,14 @@
 
 }
 
-- (OSCNode *) nodeForPath:(NSString *)p;
+- (OSCNode *) findNodeForAddress:(NSString *)p;
+- (OSCNode *) findNodeForAddress:(NSString *)p createIfMissing:(BOOL)c;
+
+- (OSCNode *) findNodeForAddressArray:(NSArray *)a;
+- (OSCNode *) findNodeForAddressArray:(NSArray *)a createIfMissing:(BOOL)c;
+
 - (void) dispatchMessage:(OSCMessage *)m;
+
 - (void) addDelegate:(id)d forPath:(NSString *)p;
 - (void) removeDelegate:(id)d forPath:(NSString *)p;
 

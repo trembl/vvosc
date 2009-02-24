@@ -55,11 +55,33 @@
 	
 	//	fake an outputs-changed notification to make sure my list of destinations updates (in case it refreshes before i'm awake)
 	[self oscOutputsChangedNotification:nil];
+	
+	
+	/*
+	OSCAddressSpace		*addressSpace = [manager addressSpace];
+	[addressSpace findNodeForAddress:@"/asdf/" createIfMissing:YES];
+	[addressSpace findNodeForAddress:@"/asdf/a" createIfMissing:YES];
+	
+	[addressSpace findNodeForAddress:@"/asdf/a/1" createIfMissing:YES];
+	[addressSpace findNodeForAddress:@"/asdf/a/2" createIfMissing:YES];
+	[addressSpace findNodeForAddress:@"/asdf/a/3" createIfMissing:YES];
+	
+	[addressSpace findNodeForAddress:@"/asdf/s" createIfMissing:YES];
+	
+	[addressSpace findNodeForAddress:@"/asdf/s/1" createIfMissing:YES];
+	[addressSpace findNodeForAddress:@"/asdf/s/2" createIfMissing:YES];
+	[addressSpace findNodeForAddress:@"/asdf/s/3" createIfMissing:YES];
+	NSLog(@"%@",addressSpace);
+	*/
 }
 
 - (void) receivedOSCMessage:(OSCMessage *)m	{
 	//NSLog(@"%s ... %@",__func__,m);
 	[self displayPackets];
+	
+	
+	OSCAddressSpace		*addressSpace = [manager addressSpace];
+	[addressSpace dispatchMessage:m];
 }
 
 - (void) displayPackets	{
@@ -209,6 +231,12 @@
 		[self displayPackets];
 	}
 }
+
+
+- (IBAction) logAddressSpace:(id)sender	{
+	NSLog(@"%@",[manager addressSpace]);
+}
+
 
 - (IBAction) intTest:(id)sender	{
 	//NSLog(@"AppController:intTest:");

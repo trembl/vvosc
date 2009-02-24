@@ -54,6 +54,9 @@
 - (NSUInteger) indexOfObject:(id)o;
 - (NSUInteger) lockIndexOfObject:(id)o;
 
+- (int) indexOfIdenticalPtr:(id)o;
+- (int) lockIndexOfIdenticalPtr:(id)o;
+
 - (void) makeObjectsPerformSelector:(SEL)s;
 - (void) lockMakeObjectsPerformSelector:(SEL)s;
 - (void) makeObjectsPerformSelector:(SEL)s withObject:(id)o;

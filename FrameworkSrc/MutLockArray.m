@@ -339,6 +339,34 @@
 	}
 	return returnMe;
 }
+- (int) indexOfIdenticalPtr:(id)o	{
+	int					delegateIndex = NSNotFound;
+	
+	if ((array!=nil) && (o!=nil) && ([array count]>0))	{
+		NSEnumerator		*it = [array objectEnumerator];
+		id					anObj;
+		int					indexCount = 0;
+		
+		while ((anObj = [it nextObject]) && (delegateIndex==NSNotFound))	{
+			if (anObj == o)
+				delegateIndex = indexCount;
+			++indexCount;
+		}
+	}
+	
+	return delegateIndex;
+}
+- (int) lockIndexOfIdenticalPtr:(id)o	{
+	int			returnMe = NSNotFound;
+	
+	if ((array!=nil) && (o!=nil) && ([array count]>0))	{
+		pthread_rwlock_rdlock(&arrayLock);
+			returnMe = [self indexOfIdenticalPtr:o];
+		pthread_rwlock_unlock(&arrayLock);
+	}
+	
+	return returnMe;
+}
 
 
 - (void) makeObjectsPerformSelector:(SEL)s	{

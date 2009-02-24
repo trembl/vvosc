@@ -51,6 +51,8 @@
 //	called when the user clicks the "clear" button
 - (IBAction) clearButtonUsed:(id)sender;
 
+- (IBAction) logAddressSpace:(id)sender;
+
 - (IBAction) intTest:(id)sender;
 - (IBAction) floatTest:(id)sender;
 - (IBAction) colorTest:(id)sender;
