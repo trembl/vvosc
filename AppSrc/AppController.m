@@ -79,9 +79,10 @@
 	//NSLog(@"%s ... %@",__func__,m);
 	[self displayPackets];
 	
-	
+	/*
 	OSCAddressSpace		*addressSpace = [manager addressSpace];
 	[addressSpace dispatchMessage:m];
+	*/
 }
 
 - (void) displayPackets	{
@@ -234,7 +235,7 @@
 
 
 - (IBAction) logAddressSpace:(id)sender	{
-	NSLog(@"%@",[manager addressSpace]);
+	//NSLog(@"%@",[manager addressSpace]);
 }
 
 

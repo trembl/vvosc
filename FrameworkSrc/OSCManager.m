@@ -28,7 +28,6 @@
 		pthread_rwlock_init(&outPortLock, &attr);
 		
 		zeroConfManager = [[OSCZeroConfManager alloc] initWithOSCManager:self];
-		addressSpace = [[OSCAddressSpace alloc] init];
 		return self;
 	}
 	[self release];
@@ -36,9 +35,6 @@
 }
 
 - (void) dealloc	{
-	if (addressSpace != nil)
-		[addressSpace release];
-	addressSpace = nil;
 	if (zeroConfManager != nil)	{
 		[zeroConfManager release];
 		zeroConfManager = nil;
@@ -453,9 +449,6 @@
 }
 - (NSMutableArray *) outPortArray	{
 	return outPortArray;
-}
-- (id) addressSpace	{
-	return addressSpace;
 }
 
 

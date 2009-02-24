@@ -2422,7 +2422,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										</object>
 										<object class="NSButton" id="297061510">
 											<reference key="NSNextResponder" ref="341854203"/>
-											<int key="NSvFlags">268</int>
+											<int key="NSvFlags">-2147483380</int>
 											<string key="NSFrame">{{208, 34}, {111, 16}}</string>
 											<reference key="NSSuperview" ref="341854203"/>
 											<bool key="NSEnabled">YES</bool>

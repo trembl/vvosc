@@ -61,7 +61,6 @@ Incoming OSC data is initially received by an OSCInPort; fundamentally, in ports
 	id						delegate;		//!<If there's a delegate, it will be notified when OSC messages are received
 	
 	OSCZeroConfManager		*zeroConfManager;	//!<Creates OSCOutPorts for any OSC destinations detected via bonjour/zeroconf
-	OSCAddressSpace			*addressSpace;
 }
 
 ///	Deletes all input ports
@@ -125,7 +124,6 @@ Incoming OSC data is initially received by an OSCInPort; fundamentally, in ports
 - (void) setDelegate:(id)n;
 - (NSMutableArray *) inPortArray;
 - (NSMutableArray *) outPortArray;
-- (id) addressSpace;
 
 
 @end
