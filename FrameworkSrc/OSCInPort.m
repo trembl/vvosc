@@ -7,6 +7,7 @@
 //
 
 #import "OSCInPort.h"
+#import "ThreadLoop.h"
 
 
 
@@ -38,15 +39,15 @@
 	if (self = [super init])	{
 		deleted = NO;
 		port = p;
-		running = NO;
-		busy = NO;
 		
 		pthread_mutexattr_init(&attr);
 		pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_NORMAL);
 		pthread_mutex_init(&lock, &attr);
 		
-		threadTimer = nil;
-		threadTimerCount = 0;
+		threadLooper = [[ThreadLoop alloc]
+			initWithTimeInterval:0.03
+			target:self
+			selector:@selector(OSCThreadProc)];
 		
 		portLabel = nil;
 		if (l != nil)
@@ -72,21 +73,31 @@
 	//NSLog(@"OSCInPort:dealloc:");
 	if (!deleted)
 		[self prepareToBeDeleted];
+	
+	if (threadLooper != nil)
+		[threadLooper release];
+	threadLooper = nil;
+	
 	if (scratchArray != nil)
 		[scratchArray release];
 	scratchArray = nil;
+	
 	if (portLabel != nil)
 		[portLabel release];
 	portLabel = nil;
+	
 	pthread_mutex_destroy(&lock);
 	[super dealloc];
 }
 - (void) prepareToBeDeleted	{
 	delegate = nil;
-	if (running)
+	
+	if ([threadLooper running])
 		[self stop];
 	close(sock);
 	sock = -1;
+	
+	
 	
 	deleted = YES;
 }
@@ -120,12 +131,13 @@
 	return YES;
 }
 - (void) start	{
-	if ((busy) || (running))	{
-		NSLog(@"\t\terr: tried to start a busy port");
+	//NSLog(@"%s",__func__);
+	
+	//	return immediately if the thread looper's already running
+	if ([threadLooper running])
 		return;
-	}
-	running = YES;
-	[NSThread detachNewThreadSelector:@selector(launchOSCLoop:) toTarget:self withObject:nil];
+	
+	[threadLooper start];
 	
 	//	if there's a port name, create a NSNetService so devices using bonjour know they can send data to me
 	if (portLabel != nil)	{
@@ -147,14 +159,10 @@
 	}
 	else
 		NSLog(@"\t\terr: couldn't make zero conf dest, portLabel was nil");
+	
 }
 - (void) stop	{
-	if ((threadTimer == nil) || (!running))	{
-		NSLog(@"\t\terr: tried to stop a port with a nil timer");
-		return;
-	}
-	running = NO;
-	busy = YES;
+	//NSLog(@"%s",__func__);
 	
 	//	stop & release the bonjour service
 	if (zeroConfDest != nil)	{
@@ -163,40 +171,12 @@
 		zeroConfDest = nil;
 	}
 	
-	while (threadTimer != nil)	{
-		//NSLog(@"\t\twaiting for OSC thread to stop...");
-		usleep(1000);
-	}
+	[threadLooper stopAndWaitUntilDone];
 }
-- (void) launchOSCLoop:(id)o	{
-	threadPool = [[NSAutoreleasePool alloc] init];
-	
-	NSAutoreleasePool	*pool = threadPool;
-	NSRunLoop			*runLoop = [NSRunLoop currentRunLoop];
-	
-	threadTimer = [NSTimer
-		scheduledTimerWithTimeInterval:0.015
-		target:(id)self
-		selector:@selector(OSCThreadProc:)
-		userInfo:nil
-		repeats:YES];
-	
-	[runLoop addTimer:threadTimer forMode:NSDefaultRunLoopMode];
-	[runLoop run];
-	busy = NO;
-	threadPool = nil;
-	[pool release];
-}
-- (void) OSCThreadProc:(NSTimer *)t	{
+
+- (void) OSCThreadProc	{
 	//NSLog(@"%s",__func__);
-	//	if i'm no longer supposed to be running, kill the thread
-	if (!running)	{
-		if (threadTimer != nil)	{
-			[threadTimer invalidate];
-			threadTimer = nil;
-		}
-		return;
-	}
+	
 	//	if i'm not bound, return
 	if (!bound)
 		return;
@@ -216,23 +196,14 @@
 	if (readyFileCount < 0)	{	//	if there was an error, bail immediately
 		NSLog(@"\t\terr: socket got closed unexpectedly");
 		[self stop];
-		if (threadTimer != nil)	{
-			[threadTimer invalidate];
-			threadTimer = nil;
-		}
 	}
 	//NSLog(@"\t\tcounted %ld ready files",readyFileCount);
 	//	if the socket is one of the file descriptors, i need to get data from it
 	while (FD_ISSET(sock, &readFileDescriptor))	{
 		//NSLog(@"\t\twhile/packet ping");
 		//	if i'm no longer supposed to be running, kill the thread
-		if (!running)	{
-			if (threadTimer != nil)	{
-				[threadTimer invalidate];
-				threadTimer = nil;
-			}
+		if (![threadLooper running])
 			return;
-		}
 		
 		struct sockaddr_in		addrFrom;
 		socklen_t				addrFromLen;
@@ -252,11 +223,10 @@
 		
 		if (!skipThisPacket)	{
 			buf[numBytes] = '\0';
-			/*
-				if i've reached this point, i have a buffer of the appropriate
-				length which needs to be parsed.  the buffer doesn't contain
-				multiple messages, or multiple root-level bundles
-			*/
+			
+			//	if i've reached this point, i have a buffer of the appropriate
+			//	length which needs to be parsed.  the buffer doesn't contain
+			//	multiple messages, or multiple root-level bundles
 			[self parseRawBuffer:buf ofMaxLength:numBytes];
 		}
 		
@@ -272,13 +242,6 @@
 		pthread_mutex_unlock(&lock);
 		
 		[self handleScratchArray:tmpArray];
-	}
-	
-	//	bump the threadTimercount, drain the autorelease pool periodically
-	++threadTimerCount;
-	if (threadTimerCount > 1024)	{
-		[threadPool drain];
-		threadTimerCount = 0;
 	}
 }
 /*
@@ -338,8 +301,6 @@
 	pthread_mutex_unlock(&lock);
 	//	set up with the new port
 	bound = NO;
-	running = NO;
-	busy = NO;
 	port = n;
 	bound = [self createSocket];
 	//	if i'm bound, start- if i'm not bound, something went wrong- use my old port
@@ -356,8 +317,6 @@
 		pthread_mutex_unlock(&lock);
 		//	set up with the old port
 		bound = NO;
-		running = NO;
-		busy = NO;
 		port = oldPort;
 		bound = [self createSocket];
 		if (bound)

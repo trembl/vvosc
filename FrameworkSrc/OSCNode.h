@@ -24,6 +24,7 @@
 	id				delegateArray;	//	type 'MutLockArray'. contents are NOT retained! could be anything!
 }
 
+//	only called by the address space to craft a formatted string for logging purposes
 - (void) logDescriptionToString:(NSMutableString *)s tabDepth:(int)d;
 
 + (id) createWithName:(NSString *)n;

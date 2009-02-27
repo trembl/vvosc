@@ -101,6 +101,14 @@
 		966A89F70F536D1400188EB7 /* OSCStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 966A89F10F536D1400188EB7 /* OSCStringAdditions.m */; };
 		966A89F80F536D1400188EB7 /* OSCStringAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 966A89F00F536D1400188EB7 /* OSCStringAdditions.h */; };
 		966A89F90F536D1400188EB7 /* OSCStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 966A89F10F536D1400188EB7 /* OSCStringAdditions.m */; };
+		966B7DBF0F5721FB00AA5AB5 /* ThreadLoop.m in Sources */ = {isa = PBXBuildFile; fileRef = 966B7DBD0F5721FB00AA5AB5 /* ThreadLoop.m */; };
+		966B7DC00F5721FB00AA5AB5 /* ThreadLoop.h in Headers */ = {isa = PBXBuildFile; fileRef = 966B7DBE0F5721FB00AA5AB5 /* ThreadLoop.h */; };
+		966B7DC10F5721FB00AA5AB5 /* ThreadLoop.m in Sources */ = {isa = PBXBuildFile; fileRef = 966B7DBD0F5721FB00AA5AB5 /* ThreadLoop.m */; };
+		966B7DC20F5721FB00AA5AB5 /* ThreadLoop.h in Headers */ = {isa = PBXBuildFile; fileRef = 966B7DBE0F5721FB00AA5AB5 /* ThreadLoop.h */; };
+		966B7DC30F5721FB00AA5AB5 /* ThreadLoop.m in Sources */ = {isa = PBXBuildFile; fileRef = 966B7DBD0F5721FB00AA5AB5 /* ThreadLoop.m */; };
+		966B7DC40F5721FB00AA5AB5 /* ThreadLoop.h in Headers */ = {isa = PBXBuildFile; fileRef = 966B7DBE0F5721FB00AA5AB5 /* ThreadLoop.h */; };
+		966B7DC50F5721FB00AA5AB5 /* ThreadLoop.m in Sources */ = {isa = PBXBuildFile; fileRef = 966B7DBD0F5721FB00AA5AB5 /* ThreadLoop.m */; };
+		966B7DC60F5721FB00AA5AB5 /* ThreadLoop.h in Headers */ = {isa = PBXBuildFile; fileRef = 966B7DBE0F5721FB00AA5AB5 /* ThreadLoop.h */; };
 		967FDE460EFAA6AF00BCF87E /* OSCBundle.h in Headers */ = {isa = PBXBuildFile; fileRef = 964687D40E884F4E00CCC231 /* OSCBundle.h */; };
 		967FDE470EFAA6B000BCF87E /* OSCBundle.m in Sources */ = {isa = PBXBuildFile; fileRef = 964687D50E884F4E00CCC231 /* OSCBundle.m */; };
 		967FDE480EFAA6B000BCF87E /* OSCInPort.h in Headers */ = {isa = PBXBuildFile; fileRef = 964687CF0E884F4E00CCC231 /* OSCInPort.h */; };
@@ -279,6 +287,8 @@
 		965392190E85F60E00A719BF /* VVOSC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VVOSC.h; path = FrameworkSrc/VVOSC.h; sourceTree = "<group>"; };
 		966A89F00F536D1400188EB7 /* OSCStringAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSCStringAdditions.h; path = FrameworkSrc/OSCStringAdditions.h; sourceTree = "<group>"; };
 		966A89F10F536D1400188EB7 /* OSCStringAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSCStringAdditions.m; path = FrameworkSrc/OSCStringAdditions.m; sourceTree = "<group>"; };
+		966B7DBD0F5721FB00AA5AB5 /* ThreadLoop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ThreadLoop.m; path = FrameworkSrc/ThreadLoop.m; sourceTree = "<group>"; };
+		966B7DBE0F5721FB00AA5AB5 /* ThreadLoop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ThreadLoop.h; path = FrameworkSrc/ThreadLoop.h; sourceTree = "<group>"; };
 		967FDE3C0EFAA6A600BCF87E /* libVVOSC.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libVVOSC.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		969F5B980F505F7100430656 /* OSCValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSCValue.m; path = FrameworkSrc/OSCValue.m; sourceTree = "<group>"; };
 		969F5B9A0F505F7100430656 /* OSCValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSCValue.h; path = FrameworkSrc/OSCValue.h; sourceTree = "<group>"; };
@@ -459,6 +469,8 @@
 			children = (
 				9652EDF90F52290A006A23AB /* MutLockArray.h */,
 				9652EDF80F52290A006A23AB /* MutLockArray.m */,
+				966B7DBE0F5721FB00AA5AB5 /* ThreadLoop.h */,
+				966B7DBD0F5721FB00AA5AB5 /* ThreadLoop.m */,
 				969F5B9A0F505F7100430656 /* OSCValue.h */,
 				969F5B980F505F7100430656 /* OSCValue.m */,
 				964687D10E884F4E00CCC231 /* OSCMessage.h */,
@@ -492,6 +504,7 @@
 				9652EDFD0F52290A006A23AB /* MutLockArray.h in Headers */,
 				9652EE0A0F522A44006A23AB /* OSCNode.h in Headers */,
 				966A89F60F536D1400188EB7 /* OSCStringAdditions.h in Headers */,
+				966B7DC20F5721FB00AA5AB5 /* ThreadLoop.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -513,6 +526,7 @@
 				9652EDFB0F52290A006A23AB /* MutLockArray.h in Headers */,
 				9652EE080F522A44006A23AB /* OSCNode.h in Headers */,
 				966A89F20F536D1400188EB7 /* OSCStringAdditions.h in Headers */,
+				966B7DC60F5721FB00AA5AB5 /* ThreadLoop.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -534,6 +548,7 @@
 				9652EDFF0F52290A006A23AB /* MutLockArray.h in Headers */,
 				9652EE0C0F522A44006A23AB /* OSCNode.h in Headers */,
 				966A89F80F536D1400188EB7 /* OSCStringAdditions.h in Headers */,
+				966B7DC40F5721FB00AA5AB5 /* ThreadLoop.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -555,6 +570,7 @@
 				9652EE010F52290A006A23AB /* MutLockArray.h in Headers */,
 				9652EE0E0F522A44006A23AB /* OSCNode.h in Headers */,
 				966A89F40F536D1400188EB7 /* OSCStringAdditions.h in Headers */,
+				966B7DC00F5721FB00AA5AB5 /* ThreadLoop.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -741,6 +757,7 @@
 				9652EDFC0F52290A006A23AB /* MutLockArray.m in Sources */,
 				9652EE0B0F522A44006A23AB /* OSCNode.m in Sources */,
 				966A89F70F536D1400188EB7 /* OSCStringAdditions.m in Sources */,
+				966B7DC10F5721FB00AA5AB5 /* ThreadLoop.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -772,6 +789,7 @@
 				9652EDFA0F52290A006A23AB /* MutLockArray.m in Sources */,
 				9652EE090F522A44006A23AB /* OSCNode.m in Sources */,
 				966A89F30F536D1400188EB7 /* OSCStringAdditions.m in Sources */,
+				966B7DC50F5721FB00AA5AB5 /* ThreadLoop.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -792,6 +810,7 @@
 				9652EDFE0F52290A006A23AB /* MutLockArray.m in Sources */,
 				9652EE0D0F522A44006A23AB /* OSCNode.m in Sources */,
 				966A89F90F536D1400188EB7 /* OSCStringAdditions.m in Sources */,
+				966B7DC30F5721FB00AA5AB5 /* ThreadLoop.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -812,6 +831,7 @@
 				9652EE000F52290A006A23AB /* MutLockArray.m in Sources */,
 				9652EE0F0F522A44006A23AB /* OSCNode.m in Sources */,
 				966A89F50F536D1400188EB7 /* OSCStringAdditions.m in Sources */,
+				966B7DBF0F5721FB00AA5AB5 /* ThreadLoop.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

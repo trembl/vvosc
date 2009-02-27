@@ -46,14 +46,10 @@ the documentation here only covers the basics, the header file for this class is
 	int						sock;		//	socket file descriptor.  remember, everything in unix is files!
 	struct sockaddr_in		addr;		//	struct that describes *my* address (this is an in port)
 	unsigned short			port;		//	the port number i'm receiving from
-	BOOL					running;	//	whether or not i should keep running
-	BOOL					busy;
 	unsigned char			buf[8192];	//	the socket gets data and dumps it here immediately
 	
 	pthread_mutex_t			lock;
-	NSTimer					*threadTimer;
-	int						threadTimerCount;
-	NSAutoreleasePool		*threadPool;
+	id						threadLooper;
 	
 	NSString				*portLabel;		//!<the "name" of the port (added to distinguish multiple osc input ports for bonjour)
 	NSNetService			*zeroConfDest;	//	bonjour service for publishing this input's address...only active if there's a portLabel!
@@ -77,8 +73,7 @@ the documentation here only covers the basics, the header file for this class is
 - (BOOL) createSocket;
 - (void) start;
 - (void) stop;
-- (void) launchOSCLoop:(id)o;
-- (void) OSCThreadProc:(NSTimer *)t;
+- (void) OSCThreadProc;
 - (void) parseRawBuffer:(unsigned char *)b ofMaxLength:(int)l;
 
 ///	called internally by this OSCInPort, passed an array of OSCMessage objects corresponding to the serially received data

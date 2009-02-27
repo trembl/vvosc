@@ -8,12 +8,20 @@
 
 #import "OSCAddressSpace.h"
 #import "OSCStringAdditions.h"
+#import "MutLockArray.h"
 
 
 
 
 @implementation OSCAddressSpace
 
+
++ (OSCAddressSpace *) mainSpace	{
+	return _mainSpace;
+}
++ (void) initialize	{
+	_mainSpace = [[OSCAddressSpace alloc] init];
+}
 
 - (NSString *) description	{
 	NSMutableString		*mutString = [NSMutableString stringWithCapacity:0];
@@ -95,6 +103,9 @@
 	if ((d==nil)||(p==nil))
 		return;
 	
+}
+- (void) removeDelegate:(id)d forPathArray:(NSArray *)a	{
+
 }
 
 

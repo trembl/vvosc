@@ -11,8 +11,12 @@
 #else
 #import <Cocoa/Cocoa.h>
 #endif
-#import "MutLockArray.h"
 #import "OSCNode.h"
+
+
+
+
+id _mainSpace;
 
 
 
@@ -20,6 +24,8 @@
 @interface OSCAddressSpace : OSCNode {
 
 }
+
++ (OSCAddressSpace *) mainSpace;
 
 - (OSCNode *) findNodeForAddress:(NSString *)p;
 - (OSCNode *) findNodeForAddress:(NSString *)p createIfMissing:(BOOL)c;
