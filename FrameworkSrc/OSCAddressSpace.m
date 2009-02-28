@@ -104,9 +104,6 @@
 		return;
 	
 }
-- (void) removeDelegate:(id)d forPathArray:(NSArray *)a	{
-
-}
 
 
 @end

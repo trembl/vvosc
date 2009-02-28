@@ -13,6 +13,14 @@
 
 
 
+@protocol OSCNodeDelegateProtocol
+- (void) receivedOSCMessage:(OSCMessage *)m;
+- (void) oscNodeNameChangedFrom:(NSString *)oldName to:(NSString *)newName;
+@end
+
+
+
+
 @interface OSCNode : NSObject {
 	BOOL			deleted;
 	
