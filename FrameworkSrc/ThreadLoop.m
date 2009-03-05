@@ -125,7 +125,7 @@
 		
 		//NSLog(@"\t\tproc done");
 	}
-	
+	//NSLog(@"\tthread exiting");
 	[pool release];
 	running = NO;
 	//NSLog(@"\t\t%s - FINSHED",__func__);

@@ -70,7 +70,7 @@
 	return nil;
 }
 - (void) dealloc	{
-	//NSLog(@"OSCInPort:dealloc:");
+	//NSLog(@"%s",__func__);
 	if (!deleted)
 		[self prepareToBeDeleted];
 	
@@ -90,6 +90,7 @@
 	[super dealloc];
 }
 - (void) prepareToBeDeleted	{
+	//NSLog(@"%s",__func__);
 	delegate = nil;
 	
 	if ([threadLooper running])
