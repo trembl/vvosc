@@ -17,10 +17,13 @@
 
 
 + (OSCAddressSpace *) mainSpace	{
+	if (_mainSpace == nil)
+		_mainSpace = [[OSCAddressSpace alloc] init];
 	return _mainSpace;
 }
 + (void) initialize	{
-	_mainSpace = [[OSCAddressSpace alloc] init];
+	//NSLog(@"%s",__func__);
+	_mainSpace = nil;
 }
 
 - (NSString *) description	{
@@ -40,6 +43,16 @@
 	
 	//[self logDescriptionToString:mutString tabDepth:0];
 	return mutString;
+}
+- (id) init	{
+	//NSLog(@"%s",__func__);
+	if (self = [super init])	{
+		if (_mainSpace == nil)
+			_mainSpace = self;
+		return self;
+	}
+	[self release];
+	return nil;
 }
 - (OSCNode *) findNodeForAddress:(NSString *)p	{
 	//NSLog(@"%s ... %@",__func__,p);

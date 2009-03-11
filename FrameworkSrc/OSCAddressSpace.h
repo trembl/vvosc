@@ -33,6 +33,7 @@ id _mainSpace;
 - (OSCNode *) findNodeForAddressArray:(NSArray *)a;
 - (OSCNode *) findNodeForAddressArray:(NSArray *)a createIfMissing:(BOOL)c;
 
+//	unlike a normal node: first finds the destination node, then dispatches the msg
 - (void) dispatchMessage:(OSCMessage *)m;
 
 - (void) addDelegate:(id)d forPath:(NSString *)p;

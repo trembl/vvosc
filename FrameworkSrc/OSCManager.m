@@ -17,6 +17,8 @@
 - (id) init	{
 	pthread_rwlockattr_t		attr;
 	
+	[OSCAddressSpace mainSpace];
+	
 	if (self = [super init])	{
 		inPortArray = [[NSMutableArray arrayWithCapacity:0] retain];
 		outPortArray = [[NSMutableArray arrayWithCapacity:0] retain];

@@ -72,6 +72,7 @@
 	return nil;
 }
 - (id) init	{
+	//NSLog(@"%s",__func__);
 	if (self = [super init])	{
 		deleted = NO;
 		
@@ -87,9 +88,12 @@
 	return nil;
 }
 - (void) prepareToBeDeleted	{
-	[delegateArray lockRemoveAllObjects];
-	[delegateArray release];
-	delegateArray = nil;
+	if (delegateArray != nil)	{
+		[delegateArray lockMakeObjectsPerformSelector:@selector(oscNodeDeleted)];
+		[delegateArray lockRemoveAllObjects];
+		[delegateArray release];
+		delegateArray = nil;
+	}
 	deleted = YES;
 }
 - (void) dealloc	{
