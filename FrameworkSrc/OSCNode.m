@@ -62,6 +62,7 @@
 		nodeName = [[n trimFirstAndLastSlashes] retain];
 		nodeContents = nil;
 		parentNode = nil;
+		nodeType = OSCNodeTypeUnknown;
 		
 		lastReceivedMessage = nil;
 		delegateArray = nil;
@@ -79,6 +80,7 @@
 		nodeName = nil;
 		nodeContents = nil;
 		parentNode = nil;
+		nodeType = OSCNodeTypeUnknown;
 		
 		lastReceivedMessage = nil;
 		delegateArray = nil;
@@ -89,10 +91,19 @@
 }
 - (void) prepareToBeDeleted	{
 	if (delegateArray != nil)	{
+		[delegateArray wrlock];
+			[delegateArray makeObjectsPerformSelector:@selector(oscNodeDeleted)];
+			[delegateArray makeObjectsPerformSelector:@selector(retain)];
+			[delegateArray removeAllObjects];
+		[delegateArray unlock];
+		[delegateArray release];
+		delegateArray = nil;
+		/*
 		[delegateArray lockMakeObjectsPerformSelector:@selector(oscNodeDeleted)];
 		[delegateArray lockRemoveAllObjects];
 		[delegateArray release];
 		delegateArray = nil;
+		*/
 	}
 	deleted = YES;
 }
@@ -195,7 +206,8 @@
 	}
 }
 - (void) removeDelegate:(id)d	{
-	if ((d == nil)||(delegateArray!=nil)||([delegateArray count]<1))
+	//NSLog(@"%s",__func__);
+	if ((d == nil)||(delegateArray==nil)||([delegateArray count]<1))
 		return;
 	
 	//	find the delegate in my delegate array
@@ -211,6 +223,8 @@
 		//	unlock
 		[delegateArray unlock];
 	}
+	else
+		NSLog(@"\terr: couldn't find delegate to remove- %s",__func__);
 }
 
 
@@ -243,6 +257,12 @@
 }
 - (OSCNode *) parentNode	{
 	return parentNode;
+}
+- (void) setNodeType:(int)n	{
+	nodeType = n;
+}
+- (int) nodeType	{
+	return nodeType;
 }
 
 

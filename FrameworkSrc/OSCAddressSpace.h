@@ -16,7 +16,7 @@
 
 
 
-id _mainSpace;
+id _mainAddressSpace;
 
 
 

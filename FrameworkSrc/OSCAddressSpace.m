@@ -17,13 +17,11 @@
 
 
 + (OSCAddressSpace *) mainSpace	{
-	if (_mainSpace == nil)
-		_mainSpace = [[OSCAddressSpace alloc] init];
-	return _mainSpace;
+	return _mainAddressSpace;
 }
 + (void) initialize	{
-	//NSLog(@"%s",__func__);
-	_mainSpace = nil;
+	NSLog(@"%s",__func__);
+	_mainAddressSpace = [[OSCAddressSpace alloc] init];
 }
 
 - (NSString *) description	{
@@ -45,14 +43,16 @@
 	return mutString;
 }
 - (id) init	{
-	//NSLog(@"%s",__func__);
+	NSLog(@"%s",__func__);
 	if (self = [super init])	{
-		if (_mainSpace == nil)
-			_mainSpace = self;
 		return self;
 	}
 	[self release];
 	return nil;
+}
+- (void) dealloc	{
+	NSLog(@"%s",__func__);
+	[super dealloc];
 }
 - (OSCNode *) findNodeForAddress:(NSString *)p	{
 	//NSLog(@"%s ... %@",__func__,p);
@@ -99,7 +99,7 @@
 		[foundNode dispatchMessage:m];
 }
 - (void) addDelegate:(id)d forPath:(NSString *)p	{
-	NSLog(@"%s",__func__);
+	//NSLog(@"%s",__func__);
 	if ((d==nil)||(p==nil))
 		return;
 	if (![d respondsToSelector:@selector(receivedOSCMessage:)])	{
@@ -107,15 +107,18 @@
 		return;
 	}
 	
-	//OSCNode			*foundNode = [self findNodeForAddress:p createIfMissing:YES];
-	//if (foundNode != nil)
-	//	[foundNode addDelegate:d];
+	OSCNode			*foundNode = [self findNodeForAddress:p createIfMissing:YES];
+	if (foundNode != nil)
+		[foundNode addDelegate:d];
 }
 - (void) removeDelegate:(id)d forPath:(NSString *)p	{
-	NSLog(@"%s",__func__);
+	//NSLog(@"%s",__func__);
 	if ((d==nil)||(p==nil))
 		return;
 	
+	OSCNode			*foundNode = [self findNodeForAddress:p createIfMissing:NO];
+	if (foundNode != nil)
+		[foundNode addDelegate:d];
 }
 
 

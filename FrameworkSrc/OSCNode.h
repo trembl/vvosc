@@ -22,12 +22,26 @@
 
 
 
+typedef enum	{
+	OSCNodeTypeUnknown,
+	OSCNodeTypeFloat,
+	OSCNodeType2DPoint,
+	OSCNodeType3DPoint,
+	OSCNodeTypeRect,
+	OSCNodeTypeColor,
+	OSCNodeTypeString,
+} OSCNodeType;
+
+
+
+
 @interface OSCNode : NSObject {
 	BOOL			deleted;
 	
 	NSString		*nodeName;	//	"local" name: name of the node at /a/b/c is "c"
 	id				nodeContents;	//	type 'MutLockArray'
 	OSCNode			*parentNode;	//	NOT retained!
+	int				nodeType;	//	what 'type' of node i am
 	
 	OSCMessage		*lastReceivedMessage;	//	store the msg instead of the val because msgs can have multiple vals
 	id				delegateArray;	//	type 'MutLockArray'. contents are NOT retained! could be anything!
@@ -57,5 +71,6 @@
 
 @property (assign, readwrite) NSString *nodeName;
 @property (assign, readwrite) OSCNode *parentNode;
+@property (assign, readwrite) int nodeType;
 
 @end
