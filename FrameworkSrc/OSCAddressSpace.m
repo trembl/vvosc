@@ -20,7 +20,7 @@
 	return _mainAddressSpace;
 }
 + (void) initialize	{
-	NSLog(@"%s",__func__);
+	//NSLog(@"%s",__func__);
 	_mainAddressSpace = [[OSCAddressSpace alloc] init];
 }
 
@@ -43,7 +43,7 @@
 	return mutString;
 }
 - (id) init	{
-	NSLog(@"%s",__func__);
+	//NSLog(@"%s",__func__);
 	if (self = [super init])	{
 		return self;
 	}
@@ -51,7 +51,7 @@
 	return nil;
 }
 - (void) dealloc	{
-	NSLog(@"%s",__func__);
+	//NSLog(@"%s",__func__);
 	[super dealloc];
 }
 - (OSCNode *) findNodeForAddress:(NSString *)p	{
