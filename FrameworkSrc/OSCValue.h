@@ -58,9 +58,8 @@ When you send or receive values via OSC, you'll be working with OSCValue objects
 
 ///	Creates & returns an auto-released instance of OSCValue with a color
 + (id) createWithColor:(id)n;
-
-//+ (id) createWithMIDI:???
-
+///	Creates & returns an auto-released instance of OSCValue with the passed MIDI data
++ (id) createWithMIDIPort:(Byte)p status:(Byte)s data1:(Byte)d1 data2:(Byte)d2;
 ///	Creates & returns an auto-released instance of OSCValue with a BOOL
 + (id) createWithBool:(BOOL)n;
 ///	Creates & returns an auto-released instance of OSCValue representing nil
@@ -74,7 +73,7 @@ When you send or receive values via OSC, you'll be working with OSCValue objects
 //- (id) initWithTimeTag:???
 //- (id) initWithChar:???
 - (id) initWithColor:(id)n;
-//- (id) initWithMIDI:???
+- (id) initWithMIDIPort:(Byte)p status:(Byte)s data1:(Byte)d1 data2:(Byte)d2;
 - (id) initWithBool:(BOOL)n;
 - (id) initWithNil;
 - (id) initWithInfinity;
@@ -87,6 +86,11 @@ When you send or receive values via OSC, you'll be working with OSCValue objects
 - (NSString *) stringValue;
 ///	Returns a color value corresponding to the instance's value
 - (id) colorValue;
+///	Returns various parameters related to the instance's MIDI value
+- (Byte) midiPort;
+- (Byte) midiStatus;
+- (Byte) midiData1;
+- (Byte) midiData2;
 ///	Returns a BOOL value corresponding to the instance's value
 - (BOOL) boolValue;
 

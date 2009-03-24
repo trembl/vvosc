@@ -24,6 +24,8 @@
 			return [NSString stringWithFormat:@"<OSCVal s \"%@\">",(id)value];
 		case OSCValColor:
 			return [NSString stringWithFormat:@"<OSCVal r %@>",(id)value];
+		case OSCValMIDI:
+			return [NSString stringWithFormat:@"<OSCVal m %ld-%ld-%ld-%ld>",((Byte *)value)[0],((Byte *)value)[1],((Byte *)value)[2],((Byte *)value)[3]];
 		case OSCValBool:
 			if (*(BOOL *)value)
 				return [NSString stringWithString:@"<OSCVal T>"];
@@ -58,6 +60,12 @@
 }
 + (id) createWithColor:(id)n	{
 	OSCValue		*returnMe = [[OSCValue alloc] initWithColor:n];
+	if (returnMe == nil)
+		return nil;
+	return [returnMe autorelease];
+}
++ (id) createWithMIDIPort:(Byte)p status:(Byte)s data1:(Byte)d1 data2:(Byte)d2	{
+	OSCValue		*returnMe = [[OSCValue alloc] initWithMIDIPort:p status:s data1:d1 data2:d2];
 	if (returnMe == nil)
 		return nil;
 	return [returnMe autorelease];
@@ -126,6 +134,19 @@
 	[self release];
 	return nil;
 }
+- (id) initWithMIDIPort:(Byte)p status:(Byte)s data1:(Byte)d1 data2:(Byte)d2	{
+	if (self = [super init])	{
+		value = malloc(sizeof(Byte)*4);
+		((Byte *)value)[0] = p;
+		((Byte *)value)[1] = s;
+		((Byte *)value)[2] = d1;
+		((Byte *)value)[3] = d2;
+		type = OSCValMIDI;
+		return self;
+	}
+	[self release];
+	return nil;
+}
 - (id) initWithBool:(BOOL)n	{
 	if (self = [super init])	{
 		value = malloc(sizeof(BOOL));
@@ -163,11 +184,18 @@
 		case OSCValFloat:
 			if (value != nil)
 				free(value);
+			value = nil;
 			break;
 		case OSCValString:
 		case OSCValColor:
 			if (value != nil)
 				[(id)value release];
+			value = nil;
+			break;
+		case OSCValMIDI:
+			if (value != nil)
+				free(value);
+			value = nil;
 			break;
 		case OSCValNil:
 		case OSCValInfinity:
@@ -190,6 +218,18 @@
 - (id) colorValue	{
 	return (id)value;
 }
+- (Byte) midiPort	{
+	return ((Byte *)value)[0];
+}
+- (Byte) midiStatus	{
+	return ((Byte *)value)[1];
+}
+- (Byte) midiData1	{
+	return ((Byte *)value)[2];
+}
+- (Byte) midiData2	{
+	return ((Byte *)value)[3];
+}
 - (BOOL) boolValue	{
 	return *(BOOL *)value;
 }
@@ -204,6 +244,7 @@
 		case OSCValInt:
 		case OSCValFloat:
 		case OSCValColor:
+		case OSCValMIDI:
 			return 4;
 		break;
 		case OSCValString:
@@ -283,6 +324,13 @@
 			*d += 4;
 			
 			b[*t] = 'r';
+			++*t;
+			break;
+		case OSCValMIDI:
+			memcpy(b+*d, value, sizeof(Byte)*4);
+			*d += 4;
+			
+			b[*t] = 'm';
 			++*t;
 			break;
 		case OSCValBool:

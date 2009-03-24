@@ -64,6 +64,7 @@ typedef enum	{
 - (void) addNode:(OSCNode *)n;
 - (void) removeNode:(OSCNode *)n;
 - (OSCNode *) findLocalNodeNamed:(NSString *)n;
+- (OSCNode *) findLocalNodeNamed:(NSString *)n createIfMissing:(BOOL)c;
 
 - (OSCNode *) findNodeForAddress:(NSString *)p;
 - (OSCNode *) findNodeForAddress:(NSString *)p createIfMissing:(BOOL)c;

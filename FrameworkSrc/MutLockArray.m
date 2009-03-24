@@ -29,15 +29,13 @@
 	return [returnMe autorelease];
 }
 - (id) initWithCapacity:(NSUInteger)c	{
-	if (c < 0)	{
-		[self release];
-		return nil;
-	}
-	
 	pthread_rwlockattr_t		attr;
 	
 	if (self = [super init])	{
-		array = [[NSMutableArray alloc] initWithCapacity:c];
+		if (c < 0)
+			array = [[NSMutableArray alloc] initWithCapacity:0];
+		else
+			array = [[NSMutableArray alloc] initWithCapacity:c];
 		if (array == nil)	{
 			[self release];
 			return nil;
@@ -51,6 +49,9 @@
 	
 	[self release];
 	return nil;
+}
+- (id) init	{
+	return [self initWithCapacity:0];
 }
 
 - (void) dealloc	{
@@ -339,6 +340,30 @@
 	}
 	return returnMe;
 }
+- (BOOL) containsIdenticalPtr:(id)o	{
+	BOOL				returnMe = NO;
+	
+	if ((array!=nil) && (o!=nil) && ([array count]>0))	{
+		NSEnumerator		*it = [array objectEnumerator];
+		id					anObj;
+		while ((anObj = [it nextObject]) && (!returnMe))	{
+			if (anObj == o)
+				returnMe = YES;
+		}
+	}
+	
+	return returnMe;
+}
+- (BOOL) lockContainsIdenticalPtr:(id)o	{
+	BOOL				returnMe = NO;
+	
+	if ((array!=nil) && (o!=nil) && ([array count]>0))	{
+		pthread_rwlock_rdlock(&arrayLock);
+			returnMe = [self containsIdenticalPtr:o];
+		pthread_rwlock_unlock(&arrayLock);
+	}
+	return returnMe;
+}
 - (int) indexOfIdenticalPtr:(id)o	{
 	int					delegateIndex = NSNotFound;
 	
@@ -366,6 +391,29 @@
 	}
 	
 	return returnMe;
+}
+- (void) removeIdenticalPtr:(id)o	{
+	if ((array!=nil) && (o!=nil) && ([array count]>0))	{
+		int					delegateIndex = NSNotFound;
+		NSEnumerator		*it = [array objectEnumerator];
+		id					anObj;
+		int					indexCount = 0;
+		
+		while ((anObj = [it nextObject]) && (delegateIndex==NSNotFound))	{
+			if (anObj == o)
+				delegateIndex = indexCount;
+			++indexCount;
+		}
+		if (delegateIndex!=NSNotFound)
+			[array removeObjectAtIndex:delegateIndex];
+	}
+}
+- (void) lockRemoveIdenticalPtr:(id)o	{
+	if ((array!=nil) && (o!=nil) && ([array count]>0))	{
+		pthread_rwlock_wrlock(&arrayLock);
+			[self removeIdenticalPtr:o];
+		pthread_rwlock_unlock(&arrayLock);
+	}
 }
 
 
@@ -401,6 +449,66 @@
 		pthread_rwlock_rdlock(&arrayLock);
 			[self makeObjectsPerformSelector:s withObject:o];
 		pthread_rwlock_unlock(&arrayLock);
+	}
+}
+
+
+- (void) makeCopyPerformSelector:(SEL)s	{
+	if (array != nil)	{
+		NSArray		*copy = [NSArray arrayWithArray:array];
+		if (copy != nil)	{
+			@try	{
+				[copy makeObjectsPerformSelector:s];
+			}
+			@catch (NSException *err)	{
+				NSLog(@"\t\t%s- %@",__func__,err);
+			}
+		}
+	}
+}
+- (void) lockMakeCopyPerformSelector:(SEL)s	{
+	if (array != nil)	{
+		pthread_rwlock_rdlock(&arrayLock);
+		NSArray		*copy = [NSArray arrayWithArray:array];
+		pthread_rwlock_unlock(&arrayLock);
+		
+		if (copy != nil)	{
+			@try	{
+				[copy makeObjectsPerformSelector:s];
+			}
+			@catch (NSException *err)	{
+				NSLog(@"\t\t%s- %@",__func__,err);
+			}
+		}
+	}
+}
+- (void) makeCopyPerformSelector:(SEL)s withObject:(id)o	{
+	if (array != nil)	{
+		NSArray		*copy = [NSArray arrayWithArray:array];
+		if (copy != nil)	{
+			@try	{
+				[copy makeObjectsPerformSelector:s withObject:o];
+			}
+			@catch (NSException *err)	{
+				NSLog(@"\t\t%s- %@",__func__,err);
+			}
+		}
+	}
+}
+- (void) lockMakeCopyPerformSelector:(SEL)s withObject:(id)o	{
+	if (array != nil)	{
+		pthread_rwlock_rdlock(&arrayLock);
+		NSArray		*copy = [NSArray arrayWithArray:array];
+		pthread_rwlock_unlock(&arrayLock);
+		
+		if (copy != nil)	{
+			@try	{
+				[copy makeObjectsPerformSelector:s withObject:o];
+			}
+			@catch (NSException *err)	{
+				NSLog(@"\t\t%s- %@",__func__,err);
+			}
+		}
 	}
 }
 

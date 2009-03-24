@@ -23,6 +23,8 @@
 		++desiredRange.location;
 	}
 	
+	if (desiredRange.length == [self length])
+		return self;
 	return [self substringWithRange:desiredRange];
 }
 - (NSString *) stringByDeletingFirstPathComponent	{

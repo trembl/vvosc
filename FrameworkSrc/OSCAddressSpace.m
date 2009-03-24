@@ -121,6 +121,9 @@
 		beforeParent = [n parentNode];
 	if (beforeParent != nil)
 		[beforeParent removeNode:n];
+	//	make sure the node's got the proper name (it could be different from the passed array's last object)
+	if (n != nil)
+		[n setNodeName:[a lastObject]];
 	//	find the new parent node
 	NSMutableArray		*parentAddressArray = [[a mutableCopy] autorelease];
 	[parentAddressArray removeLastObject];
@@ -157,10 +160,6 @@
 		}
 	}
 	
-	//	make sure the node's got the proper name (it could be different from the passed array's last object)
-	if (n != nil)
-		[n setNodeName:[a lastObject]];
-	
 	//	if i was passed a node (if i'm actually moving something), 
 	//	make sure my newNodeCreated method gets called
 	if (n != nil)
@@ -168,7 +167,7 @@
 }
 //	this method is called whenever a new node is added to the address space- subclasses can override this for custom notifications
 - (void) newNodeCreated:(OSCNode *)n	{
-	NSLog(@"%s ... %@",__func__,[n fullName]);
+	//NSLog(@"%s ... %@",__func__,[n fullName]);
 }
 - (void) dispatchMessage:(OSCMessage *)m	{
 	//NSLog(@"%s ... %@",__func__,m);

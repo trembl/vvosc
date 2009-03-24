@@ -58,13 +58,22 @@
 - (NSUInteger) indexOfObject:(id)o;
 - (NSUInteger) lockIndexOfObject:(id)o;
 
+- (BOOL) containsIdenticalPtr:(id)o;
+- (BOOL) lockContainsIdenticalPtr:(id)o;
 - (int) indexOfIdenticalPtr:(id)o;
 - (int) lockIndexOfIdenticalPtr:(id)o;
+- (void) removeIdenticalPtr:(id)o;
+- (void) lockRemoveIdenticalPtr:(id)o;
 
 - (void) makeObjectsPerformSelector:(SEL)s;
 - (void) lockMakeObjectsPerformSelector:(SEL)s;
 - (void) makeObjectsPerformSelector:(SEL)s withObject:(id)o;
 - (void) lockMakeObjectsPerformSelector:(SEL)s withObject:(id)o;
+
+- (void) makeCopyPerformSelector:(SEL)s;
+- (void) lockMakeCopyPerformSelector:(SEL)s;
+- (void) makeCopyPerformSelector:(SEL)s withObject:(id)o;
+- (void) lockMakeCopyPerformSelector:(SEL)s withObject:(id)o;
 
 - (void) sortUsingSelector:(SEL)s;
 - (void) lockSortUsingSelector:(SEL)s;

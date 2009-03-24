@@ -203,6 +203,9 @@
 	*/
 }
 - (OSCNode *) findLocalNodeNamed:(NSString *)n	{
+	return [self findLocalNodeNamed:n createIfMissing:NO];
+}
+- (OSCNode *) findLocalNodeNamed:(NSString *)n createIfMissing:(BOOL)c	{
 	if (n == nil)
 		return nil;
 	
@@ -215,6 +218,13 @@
 			nodePtr = [nodeIt nextObject];
 		} while ((nodePtr!=nil) && (![[nodePtr nodeName] isEqualToString:n]));
 	[nodeContents unlock];
+	
+	//	if i couldn't find the node and i'm supposed to create it, do so
+	if ((nodePtr == nil)&&(c))	{
+		nodePtr = [OSCNode createWithName:n];
+		[self addNode:nodePtr];
+		[addressSpace newNodeCreated:nodePtr];
+	}
 	
 	return nodePtr;
 }
@@ -382,6 +392,7 @@
 	return nodeContents;
 }
 - (void) setParentNode:(OSCNode *)n	{
+	//NSLog(@"%s",__func__);
 	parentNode = n;
 	
 	if (fullName != nil)

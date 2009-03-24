@@ -179,6 +179,13 @@
 				tmpIndex = tmpIndex + 4;
 				break;
 			case 'm':			//	4 byte MIDI message.  bytes from MSB to LSB are: port id, status byte, data1, data2
+				oscValue = [OSCValue
+					createWithMIDIPort:b[tmpIndex]
+					status:b[tmpIndex+1]
+					data1:b[tmpIndex+2]
+					data2:b[tmpIndex+3]];
+				[msg addValue:oscValue];
+				
 				tmpIndex = tmpIndex + 4;
 				break;
 			case 'T':			//	True.  no bytes are allocated in the argument data!
