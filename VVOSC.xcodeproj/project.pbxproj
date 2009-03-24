@@ -97,7 +97,7 @@
 		966A89F30F536D1400188EB7 /* OSCStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 966A89F10F536D1400188EB7 /* OSCStringAdditions.m */; };
 		966A89F40F536D1400188EB7 /* OSCStringAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 966A89F00F536D1400188EB7 /* OSCStringAdditions.h */; };
 		966A89F50F536D1400188EB7 /* OSCStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 966A89F10F536D1400188EB7 /* OSCStringAdditions.m */; };
-		966A89F60F536D1400188EB7 /* OSCStringAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 966A89F00F536D1400188EB7 /* OSCStringAdditions.h */; };
+		966A89F60F536D1400188EB7 /* OSCStringAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 966A89F00F536D1400188EB7 /* OSCStringAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		966A89F70F536D1400188EB7 /* OSCStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 966A89F10F536D1400188EB7 /* OSCStringAdditions.m */; };
 		966A89F80F536D1400188EB7 /* OSCStringAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 966A89F00F536D1400188EB7 /* OSCStringAdditions.h */; };
 		966A89F90F536D1400188EB7 /* OSCStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 966A89F10F536D1400188EB7 /* OSCStringAdditions.m */; };

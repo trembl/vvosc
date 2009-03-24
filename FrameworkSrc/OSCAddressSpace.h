@@ -27,11 +27,18 @@ id _mainAddressSpace;
 
 + (OSCAddressSpace *) mainSpace;
 
-- (OSCNode *) findNodeForAddress:(NSString *)p;
-- (OSCNode *) findNodeForAddress:(NSString *)p createIfMissing:(BOOL)c;
 
-- (OSCNode *) findNodeForAddressArray:(NSArray *)a;
-- (OSCNode *) findNodeForAddressArray:(NSArray *)a createIfMissing:(BOOL)c;
+
+//- (void) setNode:(OSCNode *)n atArray:(NSArray *)a;
+
+- (void) renameAddress:(NSString *)before to:(NSString *)after;
+- (void) renameAddressArray:(NSArray *)before toArray:(NSArray *)after;
+
+- (void) setNode:(OSCNode *)n forAddress:(NSString *)a;
+- (void) setNode:(OSCNode *)n forAddressArray:(NSArray *)a;
+
+//	this method is called whenever a new node is added to the address space- subclasses can override this for custom notifications
+- (void) newNodeCreated:(OSCNode *)n;
 
 //	unlike a normal node: first finds the destination node, then dispatches the msg
 - (void) dispatchMessage:(OSCMessage *)m;

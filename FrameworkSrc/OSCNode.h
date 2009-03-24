@@ -14,8 +14,8 @@
 
 
 @protocol OSCNodeDelegateProtocol
-- (void) receivedOSCMessage:(OSCMessage *)m;
-- (void) oscNodeNameChangedFrom:(NSString *)oldName to:(NSString *)newName;
+- (void) receivedOSCMessage:(id)msg;
+- (void) oscNodeNameChanged:(id)node;
 - (void) oscNodeDeleted;
 @end
 
@@ -24,6 +24,7 @@
 
 typedef enum	{
 	OSCNodeTypeUnknown,
+	OSCNodeDirectory,
 	OSCNodeTypeFloat,
 	OSCNodeType2DPoint,
 	OSCNodeType3DPoint,
@@ -36,15 +37,17 @@ typedef enum	{
 
 
 @interface OSCNode : NSObject {
-	BOOL			deleted;
+	id					addressSpace;
+	BOOL				deleted;
 	
-	NSString		*nodeName;	//	"local" name: name of the node at /a/b/c is "c"
-	id				nodeContents;	//	type 'MutLockArray'
-	OSCNode			*parentNode;	//	NOT retained!
-	int				nodeType;	//	what 'type' of node i am
+	NSString			*nodeName;	//	"local" name: name of the node at /a/b/c is "c"
+	NSString			*fullName;	//	"full" name
+	id					nodeContents;	//	type 'MutLockArray'
+	OSCNode				*parentNode;	//	NOT retained!
+	int					nodeType;	//	what 'type' of node i am
 	
-	OSCMessage		*lastReceivedMessage;	//	store the msg instead of the val because msgs can have multiple vals
-	id				delegateArray;	//	type 'MutLockArray'. contents are NOT retained! could be anything!
+	OSCMessage			*lastReceivedMessage;	//	store the msg instead of the val because msgs can have multiple vals
+	id					delegateArray;	//	type 'MutLockArray'. contents are NOT retained! could be anything!
 }
 
 //	only called by the address space to craft a formatted string for logging purposes
@@ -62,15 +65,27 @@ typedef enum	{
 - (void) removeNode:(OSCNode *)n;
 - (OSCNode *) findLocalNodeNamed:(NSString *)n;
 
+- (OSCNode *) findNodeForAddress:(NSString *)p;
+- (OSCNode *) findNodeForAddress:(NSString *)p createIfMissing:(BOOL)c;
+
+- (OSCNode *) findNodeForAddressArray:(NSArray *)a;
+- (OSCNode *) findNodeForAddressArray:(NSArray *)a createIfMissing:(BOOL)c;
+
 //	a node's delegate is informed of received osc messages or name changes (OSCNodeDelegateProtocol)
 - (void) addDelegate:(id)d;
 - (void) removeDelegate:(id)d;
+- (void) informDelegatesOfNameChange;
+- (void) addDelegatesFromNode:(OSCNode *)n;
 
 //	simply sends the passed message to all my delegates
 - (void) dispatchMessage:(OSCMessage *)m;
 
 @property (assign, readwrite) NSString *nodeName;
+@property (readonly) NSString *fullName;
+@property (readonly) id nodeContents;
 @property (assign, readwrite) OSCNode *parentNode;
 @property (assign, readwrite) int nodeType;
+@property (readonly) OSCMessage *lastReceivedMessage;
+@property (readonly) id delegateArray;
 
 @end

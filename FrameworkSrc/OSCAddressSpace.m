@@ -54,41 +54,121 @@
 	//NSLog(@"%s",__func__);
 	[super dealloc];
 }
-- (OSCNode *) findNodeForAddress:(NSString *)p	{
-	//NSLog(@"%s ... %@",__func__,p);
-	return [self findNodeForAddress:p createIfMissing:NO];
+
+- (void) renameAddress:(NSString *)before to:(NSString *)after	{
+	//NSLog(@"%s ... %@ -> %@",__func__,before,after);
+	if (before==nil)	{
+		NSLog(@"\terr: before was nil %s",__func__);
+		return;
+	}
+	if (after==nil)	{
+		NSLog(@"\terr: after was nil %s",__func__);
+		return;
+	}
+	[self renameAddressArray:[[before trimFirstAndLastSlashes] pathComponents] toArray:[[after trimFirstAndLastSlashes] pathComponents]];
 }
-- (OSCNode *) findNodeForAddress:(NSString *)p createIfMissing:(BOOL)c	{
-	//NSLog(@"%s ... %@",__func__,p);
-	if (p == nil)
-		return nil;
-	
-	return [self findNodeForAddressArray:[[p trimFirstAndLastSlashes] pathComponents] createIfMissing:c];
-}
-- (OSCNode *) findNodeForAddressArray:(NSArray *)a	{
-	return [self findNodeForAddressArray:a createIfMissing:NO];
-}
-- (OSCNode *) findNodeForAddressArray:(NSArray *)a createIfMissing:(BOOL)c	{
-	//NSLog(@"%s ... %@",__func__,a);
-	if ((a==nil)||([a count]<1))
-		return nil;
-	
-	NSEnumerator		*it = [a objectEnumerator];
-	NSString			*pathComponent;
-	OSCNode				*nodeToSearch;
-	OSCNode				*foundNode = nil;
-	
-	nodeToSearch = self;
-	while ((pathComponent=[it nextObject])&&(nodeToSearch!=nil))	{
-		foundNode = [nodeToSearch findLocalNodeNamed:pathComponent];
-		if ((foundNode==nil) && (c))	{
-			foundNode = [OSCNode createWithName:pathComponent];
-			[nodeToSearch addNode:foundNode];
-		}
-		nodeToSearch = foundNode;
+
+- (void) renameAddressArray:(NSArray *)before toArray:(NSArray *)after	{
+	//NSLog(@"%s ... %@ -> %@",__func__,before,after);
+	if (before==nil)	{
+		NSLog(@"\terr: before was nil %s",__func__);
+		return;
+	}
+	if (after==nil)	{
+		NSLog(@"\terr: after was nil %s",__func__);
+		return;
 	}
 	
-	return foundNode;
+	OSCNode			*beforeNode = [self findNodeForAddressArray:before];
+	OSCNode			*afterNode = [self findNodeForAddressArray:after];
+	//OSCNode			*beforeParentNode = nil;
+	
+	//	if the 'beforeNode' is nil
+	if (beforeNode == nil)	{
+		//	if there's already an 'afterNode', i'm done!
+		if (afterNode != nil)
+			return;
+		//	if there isn't an 'afterNode', make one
+		else
+			afterNode = [self findNodeForAddressArray:after createIfMissing:YES];
+	}
+	//	else if there's a 'beforeNode', i'm going to have to move stuff
+	else	{
+		[self setNode:beforeNode forAddressArray:after];
+	}
+}
+
+	
+
+- (void) setNode:(OSCNode *)n forAddress:(NSString *)a	{
+	if (a == nil)
+		[self setNode:n forAddressArray:nil];
+	else
+		[self setNode:n forAddressArray:[[a trimFirstAndLastSlashes] pathComponents]];
+}
+- (void) setNode:(OSCNode *)n forAddressArray:(NSArray *)a	{
+	//NSLog(@"%s",__func__);
+	if ((a==nil)||([a count]<1))	{
+		NSLog(@"\terr: a was %@ in %s",a,__func__);
+		return;
+	}
+	
+	OSCNode			*beforeParent = nil;
+	OSCNode			*afterParent = nil;
+	
+	//	make sure the node i'm moving has been removed from its parent
+	if (n != nil)
+		beforeParent = [n parentNode];
+	if (beforeParent != nil)
+		[beforeParent removeNode:n];
+	//	find the new parent node
+	NSMutableArray		*parentAddressArray = [[a mutableCopy] autorelease];
+	[parentAddressArray removeLastObject];
+	afterParent = [self findNodeForAddressArray:parentAddressArray];
+	//	if there isn't a parent node (if i have to make one)
+	if (afterParent == nil)	{
+		//	if i passed a non-nil node (if i'm actually moving a node), i'll have to make the parent
+		if (n != nil)	{
+			//	make the node, and simply add the passed node to it (don't have to merge delegates)
+			afterParent = [self findNodeForAddressArray:parentAddressArray createIfMissing:YES];
+			[afterParent addNode:n];
+		}
+		//	else if i passed a nil node (if i'm deleting a node), i'm done- the parent doesn't even exist
+	}
+	//	else if there's already a parent node
+	else	{
+		//	check to see if there's a pre-existing node
+		OSCNode		*preExistingNode = [afterParent findLocalNodeNamed:[a lastObject]];
+		//	if there is a pre-existing node
+		if (preExistingNode != nil)	{
+			//	if i'm passing a node (if i'm actually moving a node), add the delegates
+			if (n != nil)
+				[preExistingNode addDelegatesFromNode:n];
+			//	else if i'm passing a nil node (deleting a node), delete the pre-existing node
+			else
+				[afterParent removeNode:preExistingNode];
+		}
+		//	else if there isn't a pre-existing node
+		else	{
+			//	if i'm passing a node, add the node to the parent
+			if (n != nil)
+				[afterParent addNode:n];
+			//	if i was passing a nil node (deleting a node), i'd be deleting the pre-existing (so i'm done)
+		}
+	}
+	
+	//	make sure the node's got the proper name (it could be different from the passed array's last object)
+	if (n != nil)
+		[n setNodeName:[a lastObject]];
+	
+	//	if i was passed a node (if i'm actually moving something), 
+	//	make sure my newNodeCreated method gets called
+	if (n != nil)
+		[self newNodeCreated:n];
+}
+//	this method is called whenever a new node is added to the address space- subclasses can override this for custom notifications
+- (void) newNodeCreated:(OSCNode *)n	{
+	NSLog(@"%s ... %@",__func__,[n fullName]);
 }
 - (void) dispatchMessage:(OSCMessage *)m	{
 	//NSLog(@"%s ... %@",__func__,m);

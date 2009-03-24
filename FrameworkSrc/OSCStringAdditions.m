@@ -25,6 +25,31 @@
 	
 	return [self substringWithRange:desiredRange];
 }
+- (NSString *) stringByDeletingFirstPathComponent	{
+	//NSLog(@"%s ... %@",__func__,self);
+	NSArray			*pathArray = [[self trimFirstAndLastSlashes] pathComponents];
+	NSString		*tmpString = nil;
+	for (NSString *pathComponent in pathArray)	{
+		if (tmpString == nil)
+			tmpString = [NSString stringWithString:@""];
+		else
+			tmpString = [NSString stringWithFormat:@"%@/%@",tmpString,pathComponent];
+	}
+	//NSLog(@"\treturning %@",tmpString);
+	return tmpString;
+	
+	/*
+	NSMutableArray		*pathComponents = [[[[self trimFirstAndLastSlashes] pathComponents] mutableCopy] autorelease];
+	//NSLog(@"\tinterim is %@",pathComponents);
+	if ((pathComponents!=nil)&&([pathComponents count]>0))	{
+		[pathComponents removeObjectAtIndex:0];
+		//NSLog(@"\tinterim2 is %@",pathComponents);
+		//NSLog(@"\treturning %@",[NSString pathWithComponents:pathComponents]);
+		return [NSString stringWithFormat:@"/%@",[NSString pathWithComponents:pathComponents]];
+	}
+	return nil;
+	*/
+}
 
 
 @end

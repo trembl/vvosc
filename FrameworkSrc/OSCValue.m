@@ -17,13 +17,13 @@
 - (NSString *) description	{
 	switch (type)	{
 		case OSCValInt:
-			return [NSString stringWithFormat:@"<OSCVal %ld>",*(int *)value];
+			return [NSString stringWithFormat:@"<OSCVal i %ld>",*(int *)value];
 		case OSCValFloat:
-			return [NSString stringWithFormat:@"<OSCVal %f>",*(float *)value];
+			return [NSString stringWithFormat:@"<OSCVal f %f>",*(float *)value];
 		case OSCValString:
-			return [NSString stringWithFormat:@"<OSCVal \"%@\">",(id)value];
+			return [NSString stringWithFormat:@"<OSCVal s \"%@\">",(id)value];
 		case OSCValColor:
-			return [NSString stringWithFormat:@"<OSCVal %@>",(id)value];
+			return [NSString stringWithFormat:@"<OSCVal r %@>",(id)value];
 		case OSCValBool:
 			if (*(BOOL *)value)
 				return [NSString stringWithString:@"<OSCVal T>"];

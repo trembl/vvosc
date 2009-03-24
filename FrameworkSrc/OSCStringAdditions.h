@@ -12,5 +12,6 @@
 @interface NSString (OSCStringAdditions)
 
 - (NSString *) trimFirstAndLastSlashes;
+- (NSString *) stringByDeletingFirstPathComponent;
 
 @end

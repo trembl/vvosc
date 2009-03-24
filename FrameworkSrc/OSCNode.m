@@ -9,6 +9,7 @@
 #import "OSCNode.h"
 #import "MutLockArray.h"
 #import "OSCStringAdditions.h"
+#import "OSCAddressSpace.h"
 
 
 
@@ -57,9 +58,11 @@
 	if (n == nil)
 		goto BAIL;
 	if (self = [super init])	{
+		addressSpace = [OSCAddressSpace mainSpace];
 		deleted = NO;
 		
 		nodeName = [[n trimFirstAndLastSlashes] retain];
+		fullName = nil;
 		nodeContents = nil;
 		parentNode = nil;
 		nodeType = OSCNodeTypeUnknown;
@@ -69,15 +72,17 @@
 		return self;
 	}
 	BAIL:
-	[self release];
+	[self autorelease];
 	return nil;
 }
 - (id) init	{
-	//NSLog(@"%s",__func__);
+	//NSLog(@"WARNING: %s",__func__);
 	if (self = [super init])	{
+		addressSpace = [OSCAddressSpace mainSpace];
 		deleted = NO;
 		
 		nodeName = nil;
+		fullName = nil;
 		nodeContents = nil;
 		parentNode = nil;
 		nodeType = OSCNodeTypeUnknown;
@@ -86,7 +91,7 @@
 		delegateArray = nil;
 		return self;
 	}
-	[self release];
+	[self autorelease];
 	return nil;
 }
 - (void) prepareToBeDeleted	{
@@ -108,20 +113,23 @@
 	deleted = YES;
 }
 - (void) dealloc	{
-	//NSLog(@"%s",__func__);
+	//NSLog(@"%s ... %@",__func__,self);
 	if (!deleted)
 		[self prepareToBeDeleted];
 	
 	if (nodeName != nil)
-		[nodeName release];
+		[nodeName autorelease];
 	nodeName = nil;
+	if (fullName != nil)
+		[fullName autorelease];
+	fullName = nil;
 	if (nodeContents != nil)
-		[nodeContents release];
+		[nodeContents autorelease];
 	nodeContents = nil;
 	parentNode = nil;
 	
 	if (lastReceivedMessage != nil)
-		[lastReceivedMessage release];
+		[lastReceivedMessage autorelease];
 	lastReceivedMessage = nil;
 	
 	[super dealloc];
@@ -166,11 +174,33 @@
 	[n setParentNode:self];
 }
 - (void) removeNode:(OSCNode *)n	{
+	//NSLog(@"%s ... %@",__func__,n);
+	if ((n == nil)||(deleted))
+		return;
+	int		indexOfIdenticalPtr = NSNotFound;
+	[n retain];
+	[nodeContents wrlock];
+		indexOfIdenticalPtr = [nodeContents indexOfIdenticalPtr:n];
+		if (indexOfIdenticalPtr != NSNotFound)
+			[nodeContents removeObjectAtIndex:indexOfIdenticalPtr];
+	[nodeContents unlock];
+	
+	if (indexOfIdenticalPtr != NSNotFound)
+		[n setParentNode:nil];
+	
+	//	if i don't have any contents, remove myself from my parent
+	if ((nodeContents==nil)||([nodeContents count]<1))	{
+		if (parentNode != nil)
+			[parentNode removeNode:self];
+	}
+	[n autorelease];
+	/*
 	if ((n == nil)||(deleted))
 		return;
 	[n prepareToBeDeleted];
 	if (nodeContents != nil)
 		[nodeContents lockRemoveObject:n];
+	*/
 }
 - (OSCNode *) findLocalNodeNamed:(NSString *)n	{
 	if (n == nil)
@@ -187,6 +217,47 @@
 	[nodeContents unlock];
 	
 	return nodePtr;
+}
+- (OSCNode *) findNodeForAddress:(NSString *)p	{
+	//NSLog(@"%s ... %@",__func__,p);
+	return [self findNodeForAddress:p createIfMissing:NO];
+}
+- (OSCNode *) findNodeForAddress:(NSString *)p createIfMissing:(BOOL)c	{
+	//NSLog(@"%s ... %@",__func__,p);
+	if (p == nil)	{
+		NSLog(@"\terr: p was nil %s",__func__);
+		return nil;
+	}
+	
+	return [self findNodeForAddressArray:[[p trimFirstAndLastSlashes] pathComponents] createIfMissing:c];
+}
+- (OSCNode *) findNodeForAddressArray:(NSArray *)a	{
+	return [self findNodeForAddressArray:a createIfMissing:NO];
+}
+- (OSCNode *) findNodeForAddressArray:(NSArray *)a createIfMissing:(BOOL)c	{
+	//NSLog(@"%s ... %@",__func__,a);
+	if ((a==nil)||([a count]<1))	{
+		NSLog(@"\terr: a was %@ in %s",a,__func__);
+		return nil;
+	}
+	
+	NSEnumerator		*it = [a objectEnumerator];
+	NSString			*pathComponent;
+	OSCNode				*nodeToSearch;
+	OSCNode				*foundNode = nil;
+	
+	nodeToSearch = self;
+	while ((pathComponent=[it nextObject])&&(nodeToSearch!=nil))	{
+		foundNode = [nodeToSearch findLocalNodeNamed:pathComponent];
+		if ((foundNode==nil) && (c))	{
+			foundNode = [OSCNode createWithName:pathComponent];
+			[nodeToSearch addNode:foundNode];
+			[addressSpace newNodeCreated:foundNode];
+		}
+		nodeToSearch = foundNode;
+	}
+	
+	return foundNode;
 }
 
 
@@ -226,6 +297,33 @@
 	else
 		NSLog(@"\terr: couldn't find delegate to remove- %s",__func__);
 }
+- (void) informDelegatesOfNameChange	{
+	//	tell my delegates that there's been a name change
+	if ((delegateArray!=nil)&&([delegateArray count]>0))	{
+		[delegateArray rdlock];
+			@try	{
+				for (id delegate in [delegateArray array])	{
+					if ([delegate respondsToSelector:@selector(oscNodeNameChanged:)])
+						[delegate oscNodeNameChanged:self];
+				}
+			}
+			@catch (NSException *err)	{
+				NSLog(@"\terr: exception %@ in %s",err,__func__);
+			}
+		[delegateArray unlock];
+	}
+}
+- (void) addDelegatesFromNode:(OSCNode *)n	{
+	//	put together an array of the delegates i'll be adding
+	NSArray		*delegatesToAdd = [[n delegateArray] lockCreateArrayCopy];
+	//	copy the delegates to my delegate array
+	[delegateArray lockAddObjectsFromArray:delegatesToAdd];
+	//	notify the delegates i copied that their names changed
+	for (id delegatePtr in delegatesToAdd)	{
+		if ([delegatePtr respondsToSelector:@selector(oscNodeNameChanged:)])
+			[delegatePtr oscNodeNameChanged:self];
+	}
+}
 
 
 - (void) dispatchMessage:(OSCMessage *)m	{
@@ -237,23 +335,74 @@
 		[delegateArray lockMakeObjectsPerformSelector:@selector(receivedOSCMessage:) withObject:m];
 	
 	if (lastReceivedMessage != nil)
-		[lastReceivedMessage release];
+		[lastReceivedMessage autorelease];
 	lastReceivedMessage = [m retain];
 }
 
 
 - (void) setNodeName:(NSString *)n	{
+	//	first of all, make sure that i'm not trying to rename it to the same name...
+	if ((n!=nil)&&(nodeName!=nil)&&([n isEqualToString:nodeName]))
+		return;
+	
 	if (nodeName != nil)
-		[nodeName release];
+		[nodeName autorelease];
 	nodeName = nil;
 	if (n != nil)
 		nodeName = [n retain];
+	
+	if (fullName != nil)
+		[fullName autorelease];
+	fullName = nil;
+	if (n != nil)	{
+		if (parentNode == addressSpace)
+			fullName = [[NSString stringWithFormat:@"/%@",nodeName] retain];
+		else if (parentNode != nil)
+			fullName = [[NSString stringWithFormat:@"%@/%@",[parentNode fullName],nodeName] retain];
+		/*
+		if (parentNode != addressSpace)
+			fullName = [[NSString stringWithFormat:@"%@/%@",[parentNode fullName],nodeName] retain];
+		else
+			fullName = [[NSString stringWithFormat:@"/%@",nodeName] retain];
+		*/
+		//NSLog(@"\tfullName = %@, %s",fullName,__func__);
+	}
+	
+	//	if there's a parent node (if it's actually in the address space), tell my delegates about the name change
+	if (parentNode != nil)
+		[self informDelegatesOfNameChange];
 }
 - (NSString *) nodeName	{
 	return nodeName;
 }
+- (NSString *) fullName	{
+	return fullName;
+}
+- (id) nodeContents	{
+	return nodeContents;
+}
 - (void) setParentNode:(OSCNode *)n	{
 	parentNode = n;
+	
+	if (fullName != nil)
+		[fullName autorelease];
+	fullName = nil;
+	
+	if (parentNode == addressSpace)
+		fullName = [[NSString stringWithFormat:@"/%@",nodeName] retain];
+	else if (parentNode != nil)
+		fullName = [[NSString stringWithFormat:@"%@/%@",[parentNode fullName],nodeName] retain];
+	/*
+	if (parentNode != addressSpace)
+		fullName = [[NSString stringWithFormat:@"%@/%@",[parentNode fullName],nodeName] retain];
+	else if (parentNode == addressSpace)
+		fullName = [[NSString stringWithFormat:@"/%@",nodeName] retain];
+	*/
+	//NSLog(@"\tfullName = %@, %s",fullName,__func__);
+	
+	//	if there's a parent node (if it's actually in the address space), tell my delegates about the name change
+	if (parentNode != nil)
+		[self informDelegatesOfNameChange];
 }
 - (OSCNode *) parentNode	{
 	return parentNode;
@@ -263,6 +412,12 @@
 }
 - (int) nodeType	{
 	return nodeType;
+}
+- (OSCMessage *) lastReceivedMessage	{
+	return lastReceivedMessage;
+}
+- (id) delegateArray	{
+	return delegateArray;
 }
 
 
