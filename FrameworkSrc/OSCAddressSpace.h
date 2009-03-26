@@ -16,20 +16,23 @@
 
 
 
+@protocol OSCAddressSpaceDelegateProtocol
+	- (void) newNodeCreated:(OSCNode *)n;
+@end
+
+
+
+
 id _mainAddressSpace;
 
 
 
 
 @interface OSCAddressSpace : OSCNode {
-
+	id			delegate;
 }
 
 + (OSCAddressSpace *) mainSpace;
-
-
-
-//- (void) setNode:(OSCNode *)n atArray:(NSArray *)a;
 
 - (void) renameAddress:(NSString *)before to:(NSString *)after;
 - (void) renameAddressArray:(NSArray *)before toArray:(NSArray *)after;
@@ -45,5 +48,8 @@ id _mainAddressSpace;
 
 - (void) addDelegate:(id)d forPath:(NSString *)p;
 - (void) removeDelegate:(id)d forPath:(NSString *)p;
+
+@property (assign, readwrite) id delegate;
+
 
 @end

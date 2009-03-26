@@ -71,7 +71,7 @@
 	[addressSpace findNodeForAddress:@"/asdf/s/1" createIfMissing:YES];
 	[addressSpace findNodeForAddress:@"/asdf/s/2" createIfMissing:YES];
 	[addressSpace findNodeForAddress:@"/asdf/s/3" createIfMissing:YES];
-	NSLog(@"%@",addressSpace);
+	//NSLog(@"%@",addressSpace);
 	*/
 }
 

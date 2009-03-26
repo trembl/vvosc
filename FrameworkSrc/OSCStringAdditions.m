@@ -52,6 +52,36 @@
 	return nil;
 	*/
 }
+- (NSString *) firstPathComponent	{
+	NSString	*trimmedString = [self trimFirstAndLastSlashes];
+	NSArray		*pathComponents = [trimmedString pathComponents];
+	return [pathComponents objectAtIndex:0];
+}
+- (NSString *) stringBySanitizingForOSCPath	{
+	int				length = [self length];
+	NSRange			desiredRange = NSMakeRange(0,length);
+	
+	if ([self characterAtIndex:desiredRange.length-1] == '/')
+		--desiredRange.length;
+	
+	//	if i start with a slash...
+	if ([self characterAtIndex:0] == '/')	{
+		//	if the length didn't change, i don't end with a slash- i can just return myself
+		if (length == desiredRange.length)
+			return self;
+		//	else if the length did change, just return a substring
+		return [self substringWithRange:desiredRange];
+	}
+	//	else if i don't start with a slash, i'll have to add one
+	else	{
+		//	if the length didn't change, i don't end with a slash- i just have to add one
+		if (length == desiredRange.length)
+			return [NSString stringWithFormat:@"/%@",self];
+		//	else if the length changed, i have to add a slash at the start and delete one at the end
+		else
+			return [NSString stringWithFormat:@"/%@",[self substringWithRange:desiredRange]];
+	}
+}
 
 
 @end

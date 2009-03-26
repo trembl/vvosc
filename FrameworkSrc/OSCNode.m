@@ -263,6 +263,7 @@
 			foundNode = [OSCNode createWithName:pathComponent];
 			[nodeToSearch addNode:foundNode];
 			[addressSpace newNodeCreated:foundNode];
+			
 		}
 		nodeToSearch = foundNode;
 	}
@@ -308,6 +309,16 @@
 		NSLog(@"\terr: couldn't find delegate to remove- %s",__func__);
 }
 - (void) informDelegatesOfNameChange	{
+	//NSLog(@"%s ... %@",__func__,self);
+	//	first of all, recalculate my full name (this could have been called by a parent changing its name)
+	if (fullName != nil)
+		[fullName release];
+	fullName = nil;
+	if (parentNode == addressSpace)
+		fullName = [[NSString stringWithFormat:@"/%@",nodeName] retain];
+	else if (parentNode != nil)
+		fullName = [[NSString stringWithFormat:@"%@/%@",[parentNode fullName],nodeName] retain];
+	
 	//	tell my delegates that there's been a name change
 	if ((delegateArray!=nil)&&([delegateArray count]>0))	{
 		[delegateArray rdlock];
@@ -318,9 +329,21 @@
 				}
 			}
 			@catch (NSException *err)	{
-				NSLog(@"\terr: exception %@ in %s",err,__func__);
+				NSLog(@"\terr: exception %@ in part A of %s",err,__func__);
 			}
 		[delegateArray unlock];
+	}
+	//	tell all my sub-nodes that their name has also changed
+	if ((nodeContents!=nil)&&([nodeContents count]>0))	{
+		[nodeContents rdlock];
+			@try	{
+				for (OSCNode *nodePtr in [nodeContents array])
+					[nodePtr informDelegatesOfNameChange];
+			}
+			@catch (NSException *err)	{
+				NSLog(@"\terr: exception %@ in part B of %s",err,__func__);
+			}
+		[nodeContents unlock];
 	}
 }
 - (void) addDelegatesFromNode:(OSCNode *)n	{
@@ -350,7 +373,14 @@
 }
 
 
+- (void) setAddressSpace:(id)n	{
+	addressSpace = n;
+}
+- (id) addressSpace	{
+	return addressSpace;
+}
 - (void) setNodeName:(NSString *)n	{
+	//NSLog(@"%s ... %@ -> %@",__func__,nodeName,n);
 	//	first of all, make sure that i'm not trying to rename it to the same name...
 	if ((n!=nil)&&(nodeName!=nil)&&([n isEqualToString:nodeName]))
 		return;
@@ -361,26 +391,22 @@
 	if (n != nil)
 		nodeName = [n retain];
 	
-	if (fullName != nil)
-		[fullName autorelease];
-	fullName = nil;
+	//if (fullName != nil)
+	//	[fullName autorelease];
+	//fullName = nil;
 	if (n != nil)	{
-		if (parentNode == addressSpace)
-			fullName = [[NSString stringWithFormat:@"/%@",nodeName] retain];
-		else if (parentNode != nil)
-			fullName = [[NSString stringWithFormat:@"%@/%@",[parentNode fullName],nodeName] retain];
-		/*
-		if (parentNode != addressSpace)
-			fullName = [[NSString stringWithFormat:@"%@/%@",[parentNode fullName],nodeName] retain];
-		else
-			fullName = [[NSString stringWithFormat:@"/%@",nodeName] retain];
-		*/
+		//if (parentNode == addressSpace)
+		//	fullName = [[NSString stringWithFormat:@"/%@",nodeName] retain];
+		//else if (parentNode != nil)
+		//	fullName = [[NSString stringWithFormat:@"%@/%@",[parentNode fullName],nodeName] retain];
 		//NSLog(@"\tfullName = %@, %s",fullName,__func__);
 	}
 	
 	//	if there's a parent node (if it's actually in the address space), tell my delegates about the name change
-	if (parentNode != nil)
+	if (parentNode != nil)	{
+		//NSLog(@"\tparent node isn't nil, informing delegates of name change");
 		[self informDelegatesOfNameChange];
+	}
 }
 - (NSString *) nodeName	{
 	return nodeName;
@@ -395,20 +421,14 @@
 	//NSLog(@"%s",__func__);
 	parentNode = n;
 	
-	if (fullName != nil)
-		[fullName autorelease];
-	fullName = nil;
+	//if (fullName != nil)
+	//	[fullName autorelease];
+	//fullName = nil;
 	
-	if (parentNode == addressSpace)
-		fullName = [[NSString stringWithFormat:@"/%@",nodeName] retain];
-	else if (parentNode != nil)
-		fullName = [[NSString stringWithFormat:@"%@/%@",[parentNode fullName],nodeName] retain];
-	/*
-	if (parentNode != addressSpace)
-		fullName = [[NSString stringWithFormat:@"%@/%@",[parentNode fullName],nodeName] retain];
-	else if (parentNode == addressSpace)
-		fullName = [[NSString stringWithFormat:@"/%@",nodeName] retain];
-	*/
+	//if (parentNode == addressSpace)
+	//	fullName = [[NSString stringWithFormat:@"/%@",nodeName] retain];
+	//else if (parentNode != nil)
+	//	fullName = [[NSString stringWithFormat:@"%@/%@",[parentNode fullName],nodeName] retain];
 	//NSLog(@"\tfullName = %@, %s",fullName,__func__);
 	
 	//	if there's a parent node (if it's actually in the address space), tell my delegates about the name change

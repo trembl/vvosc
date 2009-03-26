@@ -22,6 +22,7 @@
 + (void) initialize	{
 	//NSLog(@"%s",__func__);
 	_mainAddressSpace = [[OSCAddressSpace alloc] init];
+	[_mainAddressSpace setAddressSpace:_mainAddressSpace];
 }
 
 - (NSString *) description	{
@@ -45,6 +46,7 @@
 - (id) init	{
 	//NSLog(@"%s",__func__);
 	if (self = [super init])	{
+		delegate = nil;
 		return self;
 	}
 	[self release];
@@ -57,6 +59,7 @@
 
 - (void) renameAddress:(NSString *)before to:(NSString *)after	{
 	//NSLog(@"%s ... %@ -> %@",__func__,before,after);
+	
 	if (before==nil)	{
 		NSLog(@"\terr: before was nil %s",__func__);
 		return;
@@ -66,10 +69,12 @@
 		return;
 	}
 	[self renameAddressArray:[[before trimFirstAndLastSlashes] pathComponents] toArray:[[after trimFirstAndLastSlashes] pathComponents]];
+	
 }
 
 - (void) renameAddressArray:(NSArray *)before toArray:(NSArray *)after	{
-	//NSLog(@"%s ... %@ -> %@",__func__,before,after);
+	//NSLog(@"%s",__func__);
+	
 	if (before==nil)	{
 		NSLog(@"\terr: before was nil %s",__func__);
 		return;
@@ -81,7 +86,6 @@
 	
 	OSCNode			*beforeNode = [self findNodeForAddressArray:before];
 	OSCNode			*afterNode = [self findNodeForAddressArray:after];
-	//OSCNode			*beforeParentNode = nil;
 	
 	//	if the 'beforeNode' is nil
 	if (beforeNode == nil)	{
@@ -96,6 +100,7 @@
 	else	{
 		[self setNode:beforeNode forAddressArray:after];
 	}
+	
 }
 
 	
@@ -107,7 +112,7 @@
 		[self setNode:n forAddressArray:[[a trimFirstAndLastSlashes] pathComponents]];
 }
 - (void) setNode:(OSCNode *)n forAddressArray:(NSArray *)a	{
-	//NSLog(@"%s",__func__);
+	//NSLog(@"%s ... %@ - %@",__func__,n,a);
 	if ((a==nil)||([a count]<1))	{
 		NSLog(@"\terr: a was %@ in %s",a,__func__);
 		return;
@@ -124,10 +129,15 @@
 	//	make sure the node's got the proper name (it could be different from the passed array's last object)
 	if (n != nil)
 		[n setNodeName:[a lastObject]];
-	//	find the new parent node
+	//	find the new parent node for the destination
 	NSMutableArray		*parentAddressArray = [[a mutableCopy] autorelease];
 	[parentAddressArray removeLastObject];
-	afterParent = [self findNodeForAddressArray:parentAddressArray];
+	//	if the parent's address array is empty, the root level node is the parent
+	if ([parentAddressArray count] == 0)
+		afterParent = self;
+	else
+		afterParent = [self findNodeForAddressArray:parentAddressArray];
+	
 	//	if there isn't a parent node (if i have to make one)
 	if (afterParent == nil)	{
 		//	if i passed a non-nil node (if i'm actually moving a node), i'll have to make the parent
@@ -168,6 +178,8 @@
 //	this method is called whenever a new node is added to the address space- subclasses can override this for custom notifications
 - (void) newNodeCreated:(OSCNode *)n	{
 	//NSLog(@"%s ... %@",__func__,[n fullName]);
+	if (delegate != nil)
+		[delegate newNodeCreated:n];
 }
 - (void) dispatchMessage:(OSCMessage *)m	{
 	//NSLog(@"%s ... %@",__func__,m);
@@ -198,6 +210,13 @@
 	OSCNode			*foundNode = [self findNodeForAddress:p createIfMissing:NO];
 	if (foundNode != nil)
 		[foundNode addDelegate:d];
+}
+
+- (void) setDelegate:(id)n	{
+	delegate = n;
+}
+- (id) delegate	{
+	return delegate;
 }
 
 

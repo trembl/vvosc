@@ -85,6 +85,7 @@ typedef enum	{
 //	simply sends the passed message to all my delegates
 - (void) dispatchMessage:(OSCMessage *)m;
 
+@property (assign, readwrite) id addressSpace;
 @property (assign, readwrite) NSString *nodeName;
 @property (readonly) NSString *fullName;
 @property (readonly) id nodeContents;
