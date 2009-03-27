@@ -64,6 +64,10 @@
 	if ([self characterAtIndex:desiredRange.length-1] == '/')
 		--desiredRange.length;
 	
+	//	first of all, if there are two slashes next to one another, return nil immediately
+	if ([self rangeOfString:@"//"].location != NSNotFound)
+		return nil;
+	
 	//	if i start with a slash...
 	if ([self characterAtIndex:0] == '/')	{
 		//	if the length didn't change, i don't end with a slash- i can just return myself
