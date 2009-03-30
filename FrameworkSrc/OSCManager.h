@@ -52,11 +52,11 @@ Incoming OSC data is initially received by an OSCInPort; fundamentally, in ports
 
 
 @interface OSCManager : NSObject {
-	NSMutableArray			*inPortArray;	//	Array of OSCInPorts- do not access without using the lock!
-	NSMutableArray			*outPortArray;	//	Array of OSCOutPorts- do not access without using the lock!
+	id						inPortArray;	//	MutLockArray.  Array of OSCInPorts- do not access without using the lock!
+	id						outPortArray;	//	MutLockArray.  Array of OSCOutPorts- do not access without using the lock!
 	
-	pthread_rwlock_t		inPortLock;		//	Used to protect inPortArray from being modified while iterated
-	pthread_rwlock_t		outPortLock;	//	Used to protect outPortArray from being modified while iterated
+	//pthread_rwlock_t		inPortLock;		//	Used to protect inPortArray from being modified while iterated
+	//pthread_rwlock_t		outPortLock;	//	Used to protect outPortArray from being modified while iterated
 	
 	id						delegate;		//!<If there's a delegate, it will be notified when OSC messages are received
 	
@@ -122,8 +122,8 @@ Incoming OSC data is initially received by an OSCInPort; fundamentally, in ports
 - (id) delegate;
 ///	Sets the delegate; the delegate is NOT retained, make sure you tell the manager's nil before releasing it!
 - (void) setDelegate:(id)n;
-- (NSMutableArray *) inPortArray;
-- (NSMutableArray *) outPortArray;
+- (id) inPortArray;
+- (id) outPortArray;
 
 
 @end

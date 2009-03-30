@@ -58,19 +58,19 @@
 	return [pathComponents objectAtIndex:0];
 }
 - (NSString *) stringBySanitizingForOSCPath	{
-	int				length = [self length];
-	NSRange			desiredRange = NSMakeRange(0,length);
-	
-	if ([self characterAtIndex:desiredRange.length-1] == '/')
-		--desiredRange.length;
-	
 	//	first of all, if there are two slashes next to one another, return nil immediately
 	if ([self rangeOfString:@"//"].location != NSNotFound)
 		return nil;
 	
+	int				length = [self length];
+	NSRange			desiredRange = NSMakeRange(0,length);
+	
+	//	figure out if it ends with a slash
+	if ([self characterAtIndex:desiredRange.length-1] == '/')
+		--desiredRange.length;
 	//	if i start with a slash...
 	if ([self characterAtIndex:0] == '/')	{
-		//	if the length didn't change, i don't end with a slash- i can just return myself
+		//	if the length didn't change, i don't end with a slash- so i can just return myself
 		if (length == desiredRange.length)
 			return self;
 		//	else if the length did change, just return a substring

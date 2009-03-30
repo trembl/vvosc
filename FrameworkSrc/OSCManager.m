@@ -7,6 +7,7 @@
 //
 
 #import "OSCManager.h"
+#import "MutLockArray.h"
 
 
 
@@ -15,19 +16,19 @@
 
 
 - (id) init	{
-	pthread_rwlockattr_t		attr;
+	//pthread_rwlockattr_t		attr;
 	
 	[OSCAddressSpace mainSpace];
 	
 	if (self = [super init])	{
-		inPortArray = [[NSMutableArray arrayWithCapacity:0] retain];
-		outPortArray = [[NSMutableArray arrayWithCapacity:0] retain];
+		inPortArray = [[MutLockArray arrayWithCapacity:0] retain];
+		outPortArray = [[MutLockArray arrayWithCapacity:0] retain];
 		delegate = nil;
 		
-		pthread_rwlockattr_init(&attr);
-		pthread_rwlockattr_setpshared(&attr, PTHREAD_PROCESS_SHARED);
-		pthread_rwlock_init(&inPortLock, &attr);
-		pthread_rwlock_init(&outPortLock, &attr);
+		//pthread_rwlockattr_init(&attr);
+		//pthread_rwlockattr_setpshared(&attr, PTHREAD_PROCESS_SHARED);
+		//pthread_rwlock_init(&inPortLock, &attr);
+		//pthread_rwlock_init(&outPortLock, &attr);
 		
 		zeroConfManager = [[OSCZeroConfManager alloc] initWithOSCManager:self];
 		return self;
@@ -41,8 +42,8 @@
 		[zeroConfManager release];
 		zeroConfManager = nil;
 	}
-	pthread_rwlock_destroy(&inPortLock);
-	pthread_rwlock_destroy(&outPortLock);
+	//pthread_rwlock_destroy(&inPortLock);
+	//pthread_rwlock_destroy(&outPortLock);
 	if (inPortArray != nil)
 		[inPortArray release];
 	inPortArray = nil;
@@ -54,20 +55,20 @@
 }
 
 - (void) deleteAllInputs	{
-	pthread_rwlock_wrlock(&inPortLock);
-	
+	//pthread_rwlock_wrlock(&inPortLock);
+	[inPortArray wrlock];
 		[inPortArray makeObjectsPerformSelector:@selector(prepareToBeDeleted)];
 		[inPortArray removeAllObjects];
-	
-	pthread_rwlock_unlock(&inPortLock);
+	[inPortArray unlock];
+	//pthread_rwlock_unlock(&inPortLock);
 }
 - (void) deleteAllOutputs	{
-	pthread_rwlock_wrlock(&outPortLock);
-	
+	//pthread_rwlock_wrlock(&outPortLock);
+	[outPortArray wrlock];
 		[outPortArray makeObjectsPerformSelector:@selector(prepareToBeDeleted)];
 		[outPortArray removeAllObjects];
-	
-	pthread_rwlock_unlock(&outPortLock);
+	[outPortArray unlock];
+	//pthread_rwlock_unlock(&outPortLock);
 }
 /*===================================================================================*/
 #pragma mark --------------------- creating input ports
@@ -94,7 +95,8 @@
 	BOOL				foundPortConflict = NO;
 	BOOL				foundNameConflict = NO;
 	
-	pthread_rwlock_wrlock(&inPortLock);
+	//pthread_rwlock_wrlock(&inPortLock);
+	[inPortArray wrlock];
 		//	check for port or name conflicts
 		it = [inPortArray objectEnumerator];
 		while ((portPtr = [it nextObject]) && (!foundPortConflict) && (!foundNameConflict))	{
@@ -116,7 +118,8 @@
 				[returnMe autorelease];
 			}
 		}
-	pthread_rwlock_unlock(&inPortLock);
+	[inPortArray unlock];
+	//pthread_rwlock_unlock(&inPortLock);
 	
 	return returnMe;
 }
@@ -178,7 +181,8 @@
 	OSCOutPort			*portPtr;
 	BOOL				foundNameConflict = NO;
 	
-	pthread_rwlock_wrlock(&outPortLock);
+	//pthread_rwlock_wrlock(&outPortLock);
+	[outPortArray wrlock];
 		//	check for name conflicts
 		it = [outPortArray objectEnumerator];
 		while ((portPtr = [it nextObject]) && (!foundNameConflict))	{
@@ -196,7 +200,8 @@
 				[returnMe autorelease];
 			}
 		}
-	pthread_rwlock_unlock(&outPortLock);
+	[outPortArray unlock];
+	//pthread_rwlock_unlock(&outPortLock);
 	
 	return returnMe;
 }
@@ -244,7 +249,8 @@
 	OSCInPort		*portPtr = nil;
 	int				index = 1;
 	
-	pthread_rwlock_rdlock(&inPortLock);
+	//pthread_rwlock_rdlock(&inPortLock);
+	[inPortArray rdlock];
 		while (!found)	{
 			tmpString = [NSString stringWithFormat:@"%@ %ld",[self inPortLabelBase],index];
 			
@@ -262,7 +268,8 @@
 			
 			++index;
 		}
-	pthread_rwlock_unlock(&inPortLock);
+	[inPortArray unlock];
+	//pthread_rwlock_unlock(&inPortLock);
 	
 	return tmpString;
 }
@@ -274,8 +281,8 @@
 	OSCOutPort		*portPtr = nil;
 	int				index = 1;
 	
-	pthread_rwlock_rdlock(&outPortLock);
-	
+	//pthread_rwlock_rdlock(&outPortLock);
+	[outPortArray rdlock];
 		while (!found)	{
 			tmpString = [NSString stringWithFormat:@"OSC Out Port %ld",index];
 			
@@ -293,8 +300,8 @@
 			
 			++index;
 		}
-	
-	pthread_rwlock_unlock(&outPortLock);
+	[outPortArray unlock];
+	//pthread_rwlock_unlock(&outPortLock);
 	
 	return tmpString;
 }
@@ -306,14 +313,16 @@
 	NSEnumerator	*it;
 	OSCInPort		*portPtr = nil;
 	
-	pthread_rwlock_rdlock(&inPortLock);
+	//pthread_rwlock_rdlock(&inPortLock);
+	[inPortArray rdlock];
 		it = [inPortArray objectEnumerator];
 		while ((portPtr = [it nextObject]) && (foundPort == nil))	{
 			if ([[portPtr portLabel] isEqualToString:n])	{
 				foundPort = portPtr;
 			}
 		}
-	pthread_rwlock_unlock(&inPortLock);
+	[inPortArray unlock];
+	//pthread_rwlock_unlock(&inPortLock);
 	
 	return foundPort;
 }
@@ -326,14 +335,16 @@
 	NSEnumerator		*it;
 	OSCOutPort		*portPtr = nil;
 	
-	pthread_rwlock_rdlock(&outPortLock);
+	//pthread_rwlock_rdlock(&outPortLock);
+	[outPortArray rdlock];
 		it = [outPortArray objectEnumerator];
 		while ((portPtr = [it nextObject]) && (foundPort == nil))	{
 			if ([[portPtr portLabel] isEqualToString:n])	{
 				foundPort = portPtr;
 			}
 		}
-	pthread_rwlock_unlock(&outPortLock);
+	[outPortArray unlock];
+	//pthread_rwlock_unlock(&outPortLock);
 	
 	return foundPort;
 }
@@ -347,14 +358,16 @@
 	NSEnumerator	*it;
 	OSCOutPort		*portPtr = nil;
 	
-	pthread_rwlock_rdlock(&outPortLock);
+	//pthread_rwlock_rdlock(&outPortLock);
+	[outPortArray rdlock];
 		it = [outPortArray objectEnumerator];
 		while ((portPtr = [it nextObject]) && (foundPort == nil))	{
 			if (([[portPtr addressString] isEqualToString:a]) && ([portPtr port] == p))	{
 				foundPort = portPtr;
 			}
 		}
-	pthread_rwlock_unlock(&outPortLock);
+	[outPortArray unlock];
+	//pthread_rwlock_unlock(&outPortLock);
 	
 	return foundPort;
 }
@@ -362,9 +375,11 @@
 	if ((i<0) || (i>=[outPortArray count]))
 		return nil;
 	OSCOutPort		*returnMe = nil;
-	pthread_rwlock_rdlock(&outPortLock);
+	//pthread_rwlock_rdlock(&outPortLock);
+	[outPortArray rdlock];
 		returnMe = [outPortArray objectAtIndex:i];
-	pthread_rwlock_unlock(&outPortLock);
+	[outPortArray unlock];
+	//pthread_rwlock_unlock(&outPortLock);
 	return returnMe;
 }
 - (OSCInPort *) findInputWithZeroConfName:(NSString *)n	{
@@ -376,7 +391,8 @@
 	id				anObj;
 	id				zeroConfDest = nil;
 	
-	pthread_rwlock_rdlock(&inPortLock);
+	//pthread_rwlock_rdlock(&inPortLock);
+	[inPortArray rdlock];
 		it = [inPortArray objectEnumerator];
 		while ((anObj = [it nextObject]) && (foundPort == nil))	{
 			zeroConfDest = [anObj zeroConfDest];
@@ -385,37 +401,44 @@
 					foundPort = anObj;
 			}
 		}
-	pthread_rwlock_unlock(&inPortLock);
+	[inPortArray unlock];
+	//pthread_rwlock_unlock(&inPortLock);
 	return foundPort;
 }
 - (void) removeInput:(id)p	{
 	if (p == nil)
 		return;
 	[(OSCInPort *)p stop];
-	pthread_rwlock_wrlock(&inPortLock);
+	//pthread_rwlock_wrlock(&inPortLock);
+	[inPortArray wrlock];
 		[inPortArray removeObject:p];
-	pthread_rwlock_unlock(&inPortLock);
+	[inPortArray unlock];
+	//pthread_rwlock_unlock(&inPortLock);
 }
 - (void) removeOutput:(id)p	{
 	if (p == nil)
 		return;
-	pthread_rwlock_wrlock(&outPortLock);
+	//pthread_rwlock_wrlock(&outPortLock);
+	[outPortArray wrlock];
 		[outPortArray removeObject:p];
-	pthread_rwlock_unlock(&outPortLock);
+	[outPortArray unlock];
+	//pthread_rwlock_unlock(&outPortLock);
 }
 - (NSArray *) outPortLabelArray	{
 	NSMutableArray		*returnMe = [NSMutableArray arrayWithCapacity:0];
 	NSEnumerator		*it;
 	OSCOutPort			*portPtr;
 	
-	pthread_rwlock_rdlock(&outPortLock);
+	//pthread_rwlock_rdlock(&outPortLock);
+	[outPortArray rdlock];
 		it = [outPortArray objectEnumerator];
 		while (portPtr = [it nextObject])	{
 			if ([portPtr portLabel] != nil)	{
 				[returnMe addObject:[portPtr portLabel]];
 			}
 		}
-	pthread_rwlock_unlock(&outPortLock);
+	[outPortArray unlock];
+	//pthread_rwlock_unlock(&outPortLock);
 	
 	return returnMe;
 }
@@ -446,10 +469,10 @@
 - (void) setDelegate:(id)n	{
 	delegate = n;
 }
-- (NSMutableArray *) inPortArray	{
+- (id) inPortArray	{
 	return inPortArray;
 }
-- (NSMutableArray *) outPortArray	{
+- (id) outPortArray	{
 	return outPortArray;
 }
 
