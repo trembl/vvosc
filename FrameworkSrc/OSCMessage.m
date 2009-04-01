@@ -180,7 +180,7 @@
 				break;
 			case 'm':			//	4 byte MIDI message.  bytes from MSB to LSB are: port id, status byte, data1, data2
 				oscValue = [OSCValue
-					createWithMIDIPort:b[tmpIndex]
+					createWithMIDIChannel:b[tmpIndex]
 					status:b[tmpIndex+1]
 					data1:b[tmpIndex+2]
 					data2:b[tmpIndex+3]];

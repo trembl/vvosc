@@ -64,8 +64,8 @@
 		return nil;
 	return [returnMe autorelease];
 }
-+ (id) createWithMIDIPort:(Byte)p status:(Byte)s data1:(Byte)d1 data2:(Byte)d2	{
-	OSCValue		*returnMe = [[OSCValue alloc] initWithMIDIPort:p status:s data1:d1 data2:d2];
++ (id) createWithMIDIChannel:(Byte)c status:(Byte)s data1:(Byte)d1 data2:(Byte)d2	{
+	OSCValue		*returnMe = [[OSCValue alloc] initWithMIDIChannel:c status:s data1:d1 data2:d2];
 	if (returnMe == nil)
 		return nil;
 	return [returnMe autorelease];
@@ -134,10 +134,10 @@
 	[self release];
 	return nil;
 }
-- (id) initWithMIDIPort:(Byte)p status:(Byte)s data1:(Byte)d1 data2:(Byte)d2	{
+- (id) initWithMIDIChannel:(Byte)c status:(Byte)s data1:(Byte)d1 data2:(Byte)d2	{
 	if (self = [super init])	{
 		value = malloc(sizeof(Byte)*4);
-		((Byte *)value)[0] = p;
+		((Byte *)value)[0] = c;
 		((Byte *)value)[1] = s;
 		((Byte *)value)[2] = d1;
 		((Byte *)value)[3] = d2;
