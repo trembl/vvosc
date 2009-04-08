@@ -41,7 +41,7 @@ typedef enum	{
 /*!
 When you send or receive values via OSC, you'll be working with OSCValue objects in an OSCMessage.  Internaly, OSCValue isn't mutable, and it attempts to store its value in its native format (int for an int, float for a float) instead of relying on NSNumber.  The exceptions to this are NSColor/UIColor and NSString.  This object has to exist because there needs to be a place where data can be cleanly munged, and the standard NS* data types can't represent nil or infinity satisfactorily.
 */
-@interface OSCValue : NSObject {
+@interface OSCValue : NSObject <NSCopying> {
 	int			type;
 	void		*value;
 }

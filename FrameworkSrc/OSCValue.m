@@ -175,6 +175,46 @@
 	[self release];
 	return nil;
 }
+- (id) copyWithZone:(NSZone *)z	{
+	OSCValue		*returnMe = nil;
+	switch (type)	{
+		OSCValInt:
+			returnMe = [[OSCValue alloc] initWithInt:*((int *)value)];
+			break;
+		OSCValFloat:
+			returnMe = [[OSCValue alloc] initWithFloat:*((float *)value)];
+			break;
+		OSCValString:
+			returnMe = [[OSCValue alloc] initWithString:((NSString *)value)];
+			break;
+		OSCValTimeTag:
+			NSLog(@"\tERR: TRIED TO COPY TIME TAG");
+			break;
+		OSCValChar:
+			NSLog(@"\tERR: TRIED TO COPY CHAR");
+			break;
+		OSCValColor:
+			returnMe = [[OSCValue alloc] initWithColor:((id)value)];
+			break;
+		OSCValMIDI:
+			returnMe = [[OSCValue alloc]
+				initWithMIDIChannel:*((Byte *)value+0)
+				status:*((Byte *)value+1)
+				data1:*((Byte *)value+2)
+				data2:*((Byte *)value+3)];
+			break;
+		OSCValBool:
+			returnMe = [[OSCValue alloc] initWithBool:*((BOOL *)value)];
+			break;
+		OSCValNil:
+			returnMe = [[OSCValue alloc] initWithNil];
+			break;
+		OSCValInfinity:
+			returnMe = [[OSCValue alloc] initWithInfinity];
+			break;
+	}
+	return returnMe;
+}
 
 
 - (void) dealloc	{

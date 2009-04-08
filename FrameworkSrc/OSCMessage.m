@@ -233,6 +233,17 @@
 	[self release];
 	return nil;
 }
+- (id) copyWithZone:(NSZone *)z	{
+	OSCMessage		*returnMe = [[OSCMessage alloc] initWithAddress:address];
+	
+	if (valueCount == 1)
+		[returnMe addValue:value];
+	else if (valueCount > 1)	{
+		for (OSCValue *valPtr in valueArray)
+			[returnMe addValue:valPtr];
+	}
+	return returnMe;
+}
 - (void) dealloc	{
 	//NSLog(@"%s",__func__);
 	if (address != nil)
