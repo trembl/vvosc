@@ -19,8 +19,8 @@
 
 @protocol OSCNodeDelegateProtocol
 - (void) receivedOSCMessage:(id)msg;
-- (void) oscNodeNameChanged:(id)node;
-- (void) oscNodeDeleted;
+- (void) nodeNameChanged:(id)node;
+- (void) nodeDeleted;
 @end
 
 

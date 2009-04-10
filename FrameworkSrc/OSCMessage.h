@@ -54,6 +54,7 @@ According to the OSC spec, a message consists of an address path (where the mess
 
 ///	NOT A KEY-VALUE METHOD- function depends on valueCount!  'value' either returns "val" or the first object in "valArray", depending on "valCount"
 - (OSCValue *) value;
+- (OSCValue *) valueAtIndex:(int)i;
 
 - (NSString *) address;
 - (int) valueCount;

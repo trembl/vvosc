@@ -97,14 +97,14 @@
 - (void) prepareToBeDeleted	{
 	if (delegateArray != nil)	{
 		[delegateArray wrlock];
-			[delegateArray makeObjectsPerformSelector:@selector(oscNodeDeleted)];
+			[delegateArray makeObjectsPerformSelector:@selector(nodeDeleted)];
 			[delegateArray makeObjectsPerformSelector:@selector(retain)];
 			[delegateArray removeAllObjects];
 		[delegateArray unlock];
 		[delegateArray release];
 		delegateArray = nil;
 		/*
-		[delegateArray lockMakeObjectsPerformSelector:@selector(oscNodeDeleted)];
+		[delegateArray lockMakeObjectsPerformSelector:@selector(nodeDeleted)];
 		[delegateArray lockRemoveAllObjects];
 		[delegateArray release];
 		delegateArray = nil;
@@ -324,8 +324,8 @@
 		[delegateArray rdlock];
 			@try	{
 				for (id delegate in [delegateArray array])	{
-					if ([delegate respondsToSelector:@selector(oscNodeNameChanged:)])
-						[delegate oscNodeNameChanged:self];
+					if ([delegate respondsToSelector:@selector(nodeNameChanged:)])
+						[delegate nodeNameChanged:self];
 				}
 			}
 			@catch (NSException *err)	{
@@ -353,8 +353,8 @@
 	[delegateArray lockAddObjectsFromArray:delegatesToAdd];
 	//	notify the delegates i copied that their names changed
 	for (id delegatePtr in delegatesToAdd)	{
-		if ([delegatePtr respondsToSelector:@selector(oscNodeNameChanged:)])
-			[delegatePtr oscNodeNameChanged:self];
+		if ([delegatePtr respondsToSelector:@selector(nodeNameChanged:)])
+			[delegatePtr nodeNameChanged:self];
 	}
 }
 

@@ -318,6 +318,18 @@
 		return [valueArray objectAtIndex:0];
 	return nil;
 }
+- (OSCValue *) valueAtIndex:(int)i	{
+	if (valueCount<2)	{
+		if (i==0)
+			return value;
+		else
+			return nil;
+	}
+	if ((i<valueCount)&&(valueArray!=nil))
+		return [valueArray objectAtIndex:i];
+	
+	return nil;
+}
 
 
 - (NSString *) address	{
