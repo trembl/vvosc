@@ -67,6 +67,7 @@ typedef enum	{
 //	"local" add/remove/find methods for working with my node contents
 - (void) addNode:(OSCNode *)n;
 - (void) removeNode:(OSCNode *)n;
+- (OSCNode *) localNodeAtIndex:(int)i;
 - (OSCNode *) findLocalNodeNamed:(NSString *)n;
 - (OSCNode *) findLocalNodeNamed:(NSString *)n createIfMissing:(BOOL)c;
 

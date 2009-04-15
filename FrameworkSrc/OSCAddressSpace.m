@@ -21,8 +21,9 @@
 }
 + (void) initialize	{
 	//NSLog(@"%s",__func__);
-	_mainAddressSpace = [[OSCAddressSpace alloc] init];
-	[_mainAddressSpace setAddressSpace:_mainAddressSpace];
+	//_mainAddressSpace = [[OSCAddressSpace alloc] init];
+	//[_mainAddressSpace setAddressSpace:_mainAddressSpace];
+	_mainAddressSpace = nil;
 }
 
 - (NSString *) description	{
@@ -46,6 +47,11 @@
 - (id) init	{
 	//NSLog(@"%s",__func__);
 	if (self = [super init])	{
+		//	if there's no main address space, this will be the main address space
+		if (_mainAddressSpace == nil)	{
+			_mainAddressSpace = self;
+			[self setAddressSpace:_mainAddressSpace];
+		}
 		delegate = nil;
 		return self;
 	}
@@ -54,6 +60,8 @@
 }
 - (void) dealloc	{
 	//NSLog(@"%s",__func__);
+	if (_mainAddressSpace == self)
+		_mainAddressSpace = nil;
 	[super dealloc];
 }
 

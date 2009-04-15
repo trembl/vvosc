@@ -202,6 +202,15 @@
 		[nodeContents lockRemoveObject:n];
 	*/
 }
+- (OSCNode *) localNodeAtIndex:(int)i	{
+	if ((i<0)||(nodeContents==nil))
+		return nil;
+	if (i>= [nodeContents count])
+		return nil;
+	OSCNode			*returnMe = nil;
+	returnMe = [nodeContents lockObjectAtIndex:i];
+	return returnMe;
+}
 - (OSCNode *) findLocalNodeNamed:(NSString *)n	{
 	return [self findLocalNodeNamed:n createIfMissing:NO];
 }
@@ -404,7 +413,7 @@
 	
 	//	if there's a parent node (if it's actually in the address space), tell my delegates about the name change
 	if (parentNode != nil)	{
-		//NSLog(@"\tparent node isn't nil, informing delegates of name change");
+		//	informing delegates of name change also fixes my full name!
 		[self informDelegatesOfNameChange];
 	}
 }
