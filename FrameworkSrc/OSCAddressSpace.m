@@ -19,11 +19,63 @@
 + (OSCAddressSpace *) mainSpace	{
 	return _mainAddressSpace;
 }
++ (void) refreshMenu	{
+	//NSLog(@"%s",__func__);
+	[[NSNotificationCenter defaultCenter] postNotificationName:AddressSpaceUpdateMenus object:nil];
+}
++ (NSMenu *) makeMenuForNode:(OSCNode *)n withTarget:(id)t action:(SEL)a	{
+	if (n == nil)
+		return nil;
+	NSMenu					*returnMe = nil;
+	NSString				*passedNodeName = [n nodeName];
+	//	make the menu i'll be returning, perform basic setup on it
+	if (passedNodeName == nil)
+		returnMe = [[NSMenu alloc] initWithTitle:@"root"];
+	else
+		returnMe = [[NSMenu alloc] initWithTitle:[n nodeName]];
+	if (returnMe == nil)
+		return nil;
+	[returnMe setAutoenablesItems:NO];
+	//	get the contents of the passed node
+	MutLockArray		*nodeArray = [n nodeContents];
+	//	run through the contents of the passed node, making items for its sub-nodes
+	if (nodeArray != nil)	{
+		NSMenuItem			*newItem = nil;
+		[nodeArray rdlock];
+			for (OSCNode *nodePtr in [nodeArray array])	{
+				newItem = [[NSMenuItem alloc]
+					initWithTitle:[nodePtr nodeName]
+					action:nil
+					keyEquivalent:@""];
+				if (newItem != nil)	{
+					//	store the item's full path as its tooltip
+					[newItem setToolTip:[nodePtr fullName]];
+					//	set up the new item so it triggers the appropriate target/action
+					if ((t!=nil)&&(a!=nil))	{
+						[newItem setTarget:t];
+						[newItem setAction:a];
+					}
+					//	add the item to the menu i'll be returning, free it
+					[returnMe addItem:newItem];
+					[newItem autorelease];
+					//	if the node has sub-nodes, generate a menu for them and apply it to the new item
+					if (([nodePtr nodeContents]!=nil)&&([[nodePtr nodeContents] count]>0))	{
+						NSMenu		*subMenu = nil;
+						subMenu = [self makeMenuForNode:nodePtr withTarget:t action:a];
+						if (subMenu != nil)
+							[newItem setSubmenu:subMenu];
+					}
+				}
+			}
+		[nodeArray unlock];
+	}
+	//	autorelease the menu and return it
+	return [returnMe autorelease];
+}
 + (void) initialize	{
 	//NSLog(@"%s",__func__);
-	//_mainAddressSpace = [[OSCAddressSpace alloc] init];
-	//[_mainAddressSpace setAddressSpace:_mainAddressSpace];
-	_mainAddressSpace = nil;
+	_mainAddressSpace = [[OSCAddressSpace alloc] init];
+	[_mainAddressSpace setAddressSpace:_mainAddressSpace];
 }
 
 - (NSString *) description	{
@@ -47,11 +99,6 @@
 - (id) init	{
 	//NSLog(@"%s",__func__);
 	if (self = [super init])	{
-		//	if there's no main address space, this will be the main address space
-		if (_mainAddressSpace == nil)	{
-			_mainAddressSpace = self;
-			[self setAddressSpace:_mainAddressSpace];
-		}
 		delegate = nil;
 		return self;
 	}

@@ -215,6 +215,7 @@
 	return [self findLocalNodeNamed:n createIfMissing:NO];
 }
 - (OSCNode *) findLocalNodeNamed:(NSString *)n createIfMissing:(BOOL)c	{
+	//NSLog(@"%s ... %@, %ld",__func__,n,c);
 	if (n == nil)
 		return nil;
 	
