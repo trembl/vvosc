@@ -103,12 +103,6 @@
 		[delegateArray unlock];
 		[delegateArray release];
 		delegateArray = nil;
-		/*
-		[delegateArray lockMakeObjectsPerformSelector:@selector(nodeDeleted)];
-		[delegateArray lockRemoveAllObjects];
-		[delegateArray release];
-		delegateArray = nil;
-		*/
 	}
 	deleted = YES;
 }
@@ -194,13 +188,6 @@
 			[parentNode removeNode:self];
 	}
 	[n autorelease];
-	/*
-	if ((n == nil)||(deleted))
-		return;
-	[n prepareToBeDeleted];
-	if (nodeContents != nil)
-		[nodeContents lockRemoveObject:n];
-	*/
 }
 - (OSCNode *) localNodeAtIndex:(int)i	{
 	if ((i<0)||(nodeContents==nil))
