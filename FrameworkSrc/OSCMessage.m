@@ -234,7 +234,7 @@
 	return nil;
 }
 - (id) copyWithZone:(NSZone *)z	{
-	OSCMessage		*returnMe = [[OSCMessage alloc] initWithAddress:address];
+	OSCMessage		*returnMe = [[OSCMessage allocWithZone:z] initWithAddress:address];
 	
 	if (valueCount == 1)
 		[returnMe addValue:value];

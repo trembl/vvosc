@@ -179,13 +179,13 @@
 	OSCValue		*returnMe = nil;
 	switch (type)	{
 		OSCValInt:
-			returnMe = [[OSCValue alloc] initWithInt:*((int *)value)];
+			returnMe = [[OSCValue allocWithZone:z] initWithInt:*((int *)value)];
 			break;
 		OSCValFloat:
-			returnMe = [[OSCValue alloc] initWithFloat:*((float *)value)];
+			returnMe = [[OSCValue allocWithZone:z] initWithFloat:*((float *)value)];
 			break;
 		OSCValString:
-			returnMe = [[OSCValue alloc] initWithString:((NSString *)value)];
+			returnMe = [[OSCValue allocWithZone:z] initWithString:((NSString *)value)];
 			break;
 		OSCValTimeTag:
 			NSLog(@"\tERR: TRIED TO COPY TIME TAG");
@@ -194,23 +194,23 @@
 			NSLog(@"\tERR: TRIED TO COPY CHAR");
 			break;
 		OSCValColor:
-			returnMe = [[OSCValue alloc] initWithColor:((id)value)];
+			returnMe = [[OSCValue allocWithZone:z] initWithColor:((id)value)];
 			break;
 		OSCValMIDI:
-			returnMe = [[OSCValue alloc]
+			returnMe = [[OSCValue allocWithZone:z]
 				initWithMIDIChannel:*((Byte *)value+0)
 				status:*((Byte *)value+1)
 				data1:*((Byte *)value+2)
 				data2:*((Byte *)value+3)];
 			break;
 		OSCValBool:
-			returnMe = [[OSCValue alloc] initWithBool:*((BOOL *)value)];
+			returnMe = [[OSCValue allocWithZone:z] initWithBool:*((BOOL *)value)];
 			break;
 		OSCValNil:
-			returnMe = [[OSCValue alloc] initWithNil];
+			returnMe = [[OSCValue allocWithZone:z] initWithNil];
 			break;
 		OSCValInfinity:
-			returnMe = [[OSCValue alloc] initWithInfinity];
+			returnMe = [[OSCValue allocWithZone:z] initWithInfinity];
 			break;
 	}
 	return returnMe;
