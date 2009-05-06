@@ -219,7 +219,10 @@
 	
 	if (self = [super init])	{
 		//	if the address doesn't start with a "/", i need to add one
-		if (*[a cStringUsingEncoding:NSASCIIStringEncoding] != '/')
+		const char		*stringPtr = [a cStringUsingEncoding:NSASCIIStringEncoding];
+		if (stringPtr == nil)
+			goto BAIL;
+		if (*stringPtr != '/')
 			address = [[NSString stringWithFormat:@"/%@",a] retain];
 		else
 			address = [a retain];
