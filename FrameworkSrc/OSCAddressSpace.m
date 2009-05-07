@@ -23,6 +23,7 @@
 	//NSLog(@"%s",__func__);
 	[[NSNotificationCenter defaultCenter] postNotificationName:AddressSpaceUpdateMenus object:nil];
 }
+#if !IPHONE
 + (NSMenu *) makeMenuForNode:(OSCNode *)n withTarget:(id)t action:(SEL)a	{
 	if (n == nil)
 		return nil;
@@ -72,6 +73,7 @@
 	//	autorelease the menu and return it
 	return [returnMe autorelease];
 }
+#endif
 + (void) initialize	{
 	//NSLog(@"%s",__func__);
 	_mainAddressSpace = [[OSCAddressSpace alloc] init];
